@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import SettingsDropdown from "./SettingsDropdown";
 export default function Results() {
   const API_KEY = import.meta.env.VITE_TMDB_KEY;
   const [results, setResults] = useState([]);
@@ -37,7 +37,7 @@ export default function Results() {
         <div className="iconButton"><i className="fa-solid fa-star"></i></div>
         <div className="iconButton"><i className="fa-solid fa-bookmark"></i></div>
         <div className="iconButton"><i className="fa-solid fa-user"></i></div>
-        <div className="iconButton"><i className="fa-solid fa-gear"></i></div>
+        <SettingsDropdown />
       </div>
       <h2 className="resultsTitle">
         Search results for: <b>{query}</b>

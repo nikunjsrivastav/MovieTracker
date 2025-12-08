@@ -2,6 +2,13 @@ import { useState,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import SettingsDropdown from "./SettingsDropdown";
 export default function Home() {
+   const [theme, setTheme] = useState(
+    localStorage.getItem("theme") || "dark"
+  );
+  useEffect(() => {
+    document.body.className = theme;
+    localStorage.setItem("theme", theme);
+  }, [theme]);
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
   useEffect(() => {
@@ -31,7 +38,7 @@ export default function Home() {
         <div className="iconButton" onClick={() => navigate("/Recommended")}><i className="fa-solid fa-star"></i></div>
         <div className="iconButton"onClick={() => navigate("/WatchList")}><i className="fa-solid fa-bookmark"></i></div>
         <div className="iconButton"onClick={() => navigate("/Account")}><i className="fa-solid fa-user"></i></div>
-        <SettingsDropdown />
+        <SettingsDropdown theme={theme} setTheme={setTheme} />
       </div>
       <h1 className="title">Movie Tracker</h1>
       <p className="subtitle">Your Movie List and AI Movie Recommendation Website</p>

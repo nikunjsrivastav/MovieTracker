@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect } from "react";
-export default function SettingsDropdown() {
+export default function SettingsDropdown({ theme, setTheme }) {
   const [open, setOpen] = useState(false);
   const ref = useRef();
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
   useEffect(() => {
     function handleClick(e) {
       if (ref.current && !ref.current.contains(e.target)) {
@@ -19,9 +22,9 @@ export default function SettingsDropdown() {
 
       {open && (
         <div className="settingsDropdown">
-  <button className="dropdownItem">
+  <button className="dropdownItem" onClick={toggleTheme}>
     <i className="fa-solid fa-circle-half-stroke"></i>
-    <span>Theme</span>
+    <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
   </button>
 
   <button className="dropdownItem">

@@ -1,14 +1,26 @@
+.light {
+  --bg-color: rgba(255,255,255,0.75);
+  --surface: rgba(255,255,255,0.12);
+  --hover: rgba(0, 0, 0, 0.16);
+  --text-color: rgba(0,0,0,0.75);
+}
+.dark {
+  --bg-color: rgba(0,0,0,0.75);
+  --surface: rgba(255,255,255,0.12);
+  --hover: rgba(255, 255, 255, 0.16);
+  --text-color: rgba(255,255,255,0.75);
+}
 body{
   font-family: "Poppins", sans-serif;
   margin: 0;
   padding: 0;
-  color: white;
+  color: var(--text-color);
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
   background:
-    linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)),
+    linear-gradient(var(--bg-color), var(--bg-color)),
     url("./assets/bg.jpg") no-repeat center center/cover;
   background-attachment: fixed;
   overflow-y: scroll;
@@ -37,9 +49,9 @@ body{
 .iconButton {
   width: 56px;
   height: 56px;
-  background: rgba(255,255,255,0.08);
+  background:var(--surface);
   backdrop-filter: blur(18px) saturate(180%);
-  color: white;
+  color: var(--text-color);
   border-radius: 18px;
   display: flex;
   justify-content: center;
@@ -47,24 +59,25 @@ body{
   cursor: pointer;
   transition: 0.25s ease;
   font-size: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--hover);
   user-select: none;
   -webkit-user-select: none;
 }
 .iconButton:hover {
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: var(--hover);
   transform: translateY(-3px);
   box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
 }
 .title {
   font-size: 56px;
   font-weight: 800;
+  text-transform: uppercase;
   font-family: "Montserrat", sans-serif;
   margin-bottom: 16px; 
 }
 .subtitle {
   font-size: 20px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-color);
   font-weight: 400;
   margin-bottom: 24px;
 }
@@ -81,23 +94,23 @@ body{
   height: 56px;
   width: 320px;
   border: none;
-  background: rgba(255,255,255,0.08); 
+  background: var(--surface); 
   backdrop-filter: blur(18px) saturate(180%);
   padding: 0px 24px;
-  color:white;
+  color: var(--text-color);
   border-radius: 18px;
   transition: 0.25s ease;
   outline: none;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--hover);
   box-sizing: border-box;
 }
 .searchInput::placeholder{
   font-size: 16px;
   font-family: "Poppins",sans-serif;
-  color: rgba(255,255,255,0.45);
+  color: var(--text-color);
 }
 .searchInput:hover {
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: var(--hover);
   transform: translateY(-3px);
   box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
 }
@@ -107,25 +120,25 @@ body{
   font-family: "Poppins",sans-serif;
   font-size: 16px;
   border-radius: 18px;
-  background: rgba(255,255,255,0.08); 
+  background: var(--surface); 
   backdrop-filter: blur(18px) saturate(180%);
-  color: white;
+  color: var(--text-color);
   cursor: pointer;
   transition: 0.25s ease;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--hover);
 }
 .searchButton:hover {
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: var(--hover);
   transform: translateY(-3px);
   box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
 }
 .typedText {
   font-size: 16px;
-  color: rgba(255,255,255,0.6); 
+  color: var(--text-color); 
 }
 .resultsPage {
   width: 100%;
@@ -134,7 +147,7 @@ body{
 }
 .resultsTitle{
     font-size: 24px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-color);
     font-weight: 400;
     margin-bottom: 24px;
 }
@@ -149,7 +162,7 @@ body{
 .movieCard {
   width: 180px;
   text-align: center;
-  color: white;
+  color: var(--text-color);
   animation: fadeIn 0.5s ease forwards;
   opacity: 0;
 }
@@ -160,7 +173,7 @@ body{
 .movieCard p {
   margin-top: 8px;
   font-size: 14px;
-  color: rgba(255,255,255,0.75);
+  color: var(--text-color);
 }
 .movieCard img {
   width: 100%;
@@ -179,12 +192,12 @@ body{
   position: absolute;
   top: calc(100% + 12px);
   right: 0px;
-  background: rgba(255,255,255,0.08); 
+  background: var(--surface); 
   backdrop-filter: blur(18px) saturate(180%);
   border-radius: 18px;
   padding: 12px;
   min-width: 190px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--hover);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -192,14 +205,14 @@ body{
   animation: dropdownFade 0.25s ease;
 }
 .dropdownItem {
-  background: rgba(255, 255, 255, 0.08); 
-  color: #ffffff;
+  background: var(--surface); 
+  color: var(--text-color);
   padding: 10px 16px;
   font-size: 15px;
   font-family: "Poppins", sans-serif;
   letter-spacing: 0.2px;
   border-radius: 18px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--hover);
   cursor: pointer;
   text-align: left;
   transition: 0.25s ease;
@@ -208,7 +221,7 @@ body{
   gap: 8px;
 }
 .dropdownItem:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--hover);
   transform: translateY(-3px);
   box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
 }

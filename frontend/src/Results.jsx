@@ -2,6 +2,13 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import SettingsDropdown from "./SettingsDropdown";
 export default function Results() {
+  const [theme, setTheme] = useState(
+    localStorage.getItem("theme") || "dark"
+  );
+  useEffect(() => {
+    document.body.className = theme;
+    localStorage.setItem("theme", theme);
+  }, [theme]);
   const API_KEY = import.meta.env.VITE_TMDB_KEY;
   const [results, setResults] = useState([]);
   const { search } = useLocation();
@@ -37,7 +44,7 @@ export default function Results() {
         <div className="iconButton"><i className="fa-solid fa-star"></i></div>
         <div className="iconButton"><i className="fa-solid fa-bookmark"></i></div>
         <div className="iconButton"><i className="fa-solid fa-user"></i></div>
-        <SettingsDropdown />
+        <SettingsDropdown theme={theme} setTheme={setTheme} />
       </div>
       <h2 className="resultsTitle">
         Search results for: <b>{query}</b>

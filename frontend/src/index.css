@@ -68,6 +68,34 @@ body{
   transform: translateY(-3px);
   box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
 }
+.backButton {
+  width: 56px;
+  height: 56px;
+  background:var(--surface);
+  backdrop-filter: blur(18px) saturate(180%);
+  color: var(--text-color);
+  border-radius: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.25s ease;
+  font-size: 20px;
+  border: 1px solid var(--hover);
+  user-select: none;
+  -webkit-user-select: none;
+  position: fixed;
+  top:36px;
+  left: 36px;
+  z-index: 9999;
+}
+.backButton:hover {
+  background-color: var(--hover);
+  transform: translateY(-3px);
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
+  opacity: 100%;
+  transform: scale(1);
+}
 .title {
   font-size: 56px;
   font-weight: 800;
@@ -226,9 +254,117 @@ body{
   box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
 }
 .logout {
-  color: #ff6b6b;
+  color: red;
 }
 @keyframes dropdownFade {
   from { opacity: 0; transform: translateY(-10px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+.removeButton {
+  margin-top: 8px;
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 24px;
+  border-radius: 18px;
+  border: 1px solid var(--hover);
+  background: rgba(255,0,0,0.12);
+  backdrop-filter: blur(18px) saturate(180%);
+  color: red;
+  font-family: "Poppins" sans-serif;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+.removeButton:hover {
+  background: rgba(255,0,0,0.16);
+  transform: translateY(-3px);
+}
+.movieLayout {
+  display: grid;
+  grid-template-columns: 300px 1fr 260px;
+  gap: 32px;
+  margin-top: 32px;
+  animation: fadeIn 0.5s ease forwards;
+}
+.posterImage {
+  width: 100%;
+  border-radius: 18px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.movieTitle {
+  font-family: "Montserrat" sans-serif;
+  text-transform: uppercase;
+  font-size: 56px;
+}
+.tagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.tag {
+  padding: 12px 24px;
+  background: var(--surface);
+  backdrop-filter: blur(18px) saturate(180%);
+  border-radius: 18px;
+  font-size: 16px;
+  border: 1px solid var(--hover);
+}
+.metaRow {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.overview {
+  background: var(--surface);
+  backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid var(--hover);
+  border-radius: 18px;
+  padding: 12px;
+}
+.addBtn {
+  padding: 12px 24px;
+  border-radius: 18px;
+  background: var(--surface);
+  backdrop-filter: blur(18px) saturate(180%);
+  border: 1px solid var(--hover);
+  cursor: pointer;
+  transition: 0.25s ease;
+  font-size: 16px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  color: var(--text-color);
+}
+.addBtn:hover {
+  background-color: var(--surface);
+  transform: translateY(-3px);
+}
+.addBtn.added {
+  background: rgba(0, 255, 140, 0.12);
+  border-color: rgba(0, 255, 140, 0.16);
+  color: var(--text-color);
+}
+.sideInfo {
+  background: var(--surface);
+  backdrop-filter: blur(18px) saturate(180%);
+  padding: 12px;
+  border-radius: 18px;
+  border: 1px solid var(--hover);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+}
+.studioList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.studioTag {
+  padding: 8px 16px;
+  background: var(--surface);
+  backdrop-filter: blur(18px) saturate(180%);
+  border-radius: 18px;
+  font-size: 12px;
 }

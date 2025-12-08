@@ -1,35 +1,15 @@
 import { useState,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import SettingsDropdown from "./SettingsDropdown";
-export default function Home() {
-   const [theme, setTheme] = useState(
-    localStorage.getItem("theme") || "dark"
-  );
-  useEffect(() => {
-    document.body.className = theme;
-    localStorage.setItem("theme", theme);
-  }, [theme]);
+export default function Home({theme,setTheme}) {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
-  useEffect(() => {
-    const handleScroll = () => {
-      const bar = document.querySelector(".iconBar");
-      if (window.scrollY > 24) {
-      bar.classList.add("scrolled");
-        } else {
-      bar.classList.remove("scrolled");
-        }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
   const goToResults = () => {
     if (!query) return;
     navigate(`/results?query=${query}`);
   };
   return (
-    <div className="page">
+    <div className="homePage">
     <div className="container">
       <div className="iconBar">
         <div className="iconButton" onClick={() => navigate("/")}>

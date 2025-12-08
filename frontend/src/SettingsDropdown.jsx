@@ -19,7 +19,6 @@ export default function SettingsDropdown({ theme, setTheme }) {
       <div className="iconButton" onClick={() => setOpen(!open)}>
         <i className="fa-solid fa-gear"></i>
       </div>
-
       {open && (
         <div className="settingsDropdown">
   <button className="dropdownItem" onClick={toggleTheme}>

@@ -1,28 +1,53 @@
+/* =========================================
+   1. Theme Variables & Settings
+   ========================================= */
+:root {
+  /* Layout Constants */
+  --radius: 18px;
+  --transition: 0.25s ease;
+  --font-main: "Poppins", sans-serif;
+  --font-display: "Montserrat", sans-serif;
+  
+  /* Z-Index Layers */
+  --z-back: 900;
+  --z-nav: 1000;
+  --z-dropdown: 2000;
+}
+
 .light {
-  --bg-color: rgba(255,255,255,0.75);
-  --surface: rgba(222,222,222,1);
-  --border: rgb(0, 0, 0,0.25);
+  --bg-color: rgba(255, 255, 255, 0.75);
+  --surface: rgba(222, 222, 222, 1);
+  --border: rgba(0, 0, 0, 0.25);
   --hover: rgba(198, 198, 198, 1);
-  --text-color: rgba(0,0,0,0.75);
-  --shadow:rgba(0,0,0,0.12);
+  --text-color: rgba(0, 0, 0, 0.75);
+  --shadow-color: rgba(0, 0, 0, 0.12);
 }
+
 .dark {
-  --bg-color: rgba(32,32,32,0.75);
+  --bg-color: rgba(32, 32, 32, 0.75);
   --surface: rgba(32, 32, 32, 1);
-  --border: rgb(255, 255, 255 ,0.25);
-  --hover: rgb(56, 56, 56,1);
-  --text-color: rgba(255,255,255,0.75);
-  --shadow: rgba(255,255,255,0.12);
+  --border: rgba(255, 255, 255, 0.25);
+  --hover: rgb(56, 56, 56);
+  --text-color: rgba(255, 255, 255, 0.75);
+  --shadow-color: rgba(255, 255, 255, 0.12);
 }
-body{
-  font-family: "Poppins", sans-serif;
+
+/* =========================================
+   2. Global Reset & Body
+   ========================================= */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-main);
   margin: 0;
   padding: 0;
   color: var(--text-color);
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: center; /* Note: On small screens, 'flex-start' is often safer than 'center' */
   background:
     linear-gradient(var(--bg-color), var(--bg-color)),
     url("./assets/bg.jpg") no-repeat center/cover;
@@ -31,88 +56,121 @@ body{
   overflow-y: scroll;
 }
 
+/* =========================================
+   3. Shared Component Styles
+   ========================================= */
+
+/* Common style for all buttons and interactive cards */
+.iconButton, .backButton, .searchButton, 
+.addBtn, .tabBtn, .statusButton, .dropdownItem, .removeButton {
+  background: var(--surface);
+  color: var(--text-color);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: var(--font-main);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Common Hover Effect: Lift and Shadow */
+.iconButton:hover, .backButton:hover, .searchButton:hover, 
+.addBtn:hover, .tabBtn:hover, .statusButton:hover, 
+.dropdownItem:hover, .removeButton:hover, .searchInput:hover {
+  background-color: var(--hover);
+  transform: translateY(-3px);
+  box-shadow: 0px 4px 12px var(--shadow-color);
+}
+
+/* =========================================
+   4. Layout Containers
+   ========================================= */
 .container {
   padding: 32px;
   text-align: center;
+  width: 100%;
 }
+
+.resultsPage {
+  align-self: flex-start;
+  margin-top: 32px;
+  width: 100%;
+  max-width: 1400px;
+}
+
+.movieLayout {
+  display: grid;
+  grid-template-columns: 360px 1fr 280px;
+  gap: 32px;
+  margin-top: 48px;
+  animation: fadeIn 0.5s ease forwards;
+  text-align: left; /* Reset alignment for detailed view */
+}
+
+/* =========================================
+   5. Navigation & Header
+   ========================================= */
 .iconBar {
   position: fixed;
   top: 24px;
   right: 24px;
   display: flex;
   gap: 12px;
-  z-index: 9999;
-  padding: 12px; 
-  transition: 0.25s ease;
+  z-index: var(--z-nav);
+  padding: 12px;
+  transition: var(--transition);
 }
-.iconBar:hover{
-  opacity: 100%;
+
+.iconBar:hover {
+  opacity: 1;
   transform: scale(1);
 }
-.scrolled{
+
+.scrolled {
   transform: scale(0.75);
   opacity: 0.25;
 }
+
 .iconButton {
   width: 56px;
   height: 56px;
-  background:var(--surface);
-  color: var(--text-color);
-  border-radius: 18px;
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
-  transition: 0.25s ease;
   font-size: 20px;
-  border: 1px solid var(--border);
-  user-select: none;
-  -webkit-user-select: none;
 }
-.iconButton:hover {
-  background-color: var(--hover);
-  transform: translateY(-3px);
-  box-shadow: 0px 4px 12px var(--shadow);
-}
+
 .backButton {
   width: 56px;
   height: 56px;
-  background:var(--surface);
-  color: var(--text-color);
-  border-radius: 18px;
+  position: fixed;
+  top: 36px;
+  left: 36px;
+  z-index: var(--z-back);
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
-  transition: 0.25s ease;
   font-size: 20px;
-  border: 1px solid var(--border);
-  user-select: none;
-  -webkit-user-select: none;
-  position: fixed;
-  top:36px;
-  left: 36px;
-  z-index: 9999;
 }
-.backButton:hover {
-  background-color: var(--hover);
-  transform: translateY(-3px) scale(1);
-  box-shadow: 0px 4px 12px var(--shadow);
-  opacity: 100%;
-}
+
 .title {
   font-size: 56px;
   font-weight: 800;
   text-transform: uppercase;
-  font-family: "Montserrat", sans-serif;
-  margin-bottom: 16px; 
+  font-family: var(--font-display);
+  margin-bottom: 16px;
 }
+
 .subtitle {
   font-size: 20px;
-  color: var(--text-color);
   font-weight: 400;
   margin-bottom: 24px;
 }
+
+/* =========================================
+   6. Search Components
+   ========================================= */
 .searchBox {
   display: flex;
   justify-content: center;
@@ -120,68 +178,52 @@ body{
   gap: 12px;
   margin-bottom: 24px;
 }
+
 .searchInput {
-  font-family: "Poppins",sans-serif;
+  font-family: var(--font-main);
   font-size: 16px;
   height: 56px;
   width: 320px;
-  border: none;
-  background: var(--surface); 
-  padding: 0px 24px;
+  background: var(--surface);
+  padding: 0 24px;
   color: var(--text-color);
-  border-radius: 18px;
-  transition: 0.25s ease;
+  border-radius: var(--radius);
+  transition: var(--transition);
   outline: none;
   border: 1px solid var(--border);
-  box-sizing: border-box;
 }
-.searchInput::placeholder{
+
+.searchInput::placeholder {
   font-size: 16px;
-  font-family: "Poppins",sans-serif;
+  font-family: var(--font-main);
   color: var(--text-color);
+  opacity: 0.7;
 }
-.searchInput:hover {
-  background-color: var(--hover);
-  transform: translateY(-3px);
-  box-shadow: 0px 4px 12px var(--shadow);
-}
+
 .searchButton {
   height: 56px;
   width: 130px;
-  font-family: "Poppins",sans-serif;
   font-size: 16px;
-  border-radius: 18px;
-  background: var(--surface); 
-  color: var(--text-color);
-  cursor: pointer;
-  transition: 0.25s ease;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
-  border: 1px solid var(--border);
 }
-.searchButton:hover {
-  background-color: var(--hover);
-  transform: translateY(-3px);
-  box-shadow: 0px 4px 12px var(--shadow);
-}
+
 .typedText {
   font-size: 16px;
-  color: var(--text-color); 
+  color: var(--text-color);
 }
-.resultsPage {
-  align-self: flex-start;
-  margin-top: 32px;
-  width: 100%;
-  max-width: 1400px;
+
+/* =========================================
+   7. Cards & Grids
+   ========================================= */
+.resultsTitle {
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 24px;
 }
-.resultsTitle{
-    font-size: 24px;
-    color: var(--text-color);
-    font-weight: 400;
-    margin-bottom: 24px;
-}
+
 .resultsGrid {
   padding-top: 24px;
   margin-top: 24px;
@@ -190,6 +232,7 @@ body{
   justify-content: center;
   gap: 16px;
 }
+
 .movieCard {
   width: 180px;
   text-align: center;
@@ -197,178 +240,117 @@ body{
   animation: fadeIn 0.5s ease forwards;
   opacity: 0;
 }
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+
 .movieCard p {
   margin-top: 8px;
   font-size: 14px;
   color: var(--text-color);
 }
+
 .movieCard img {
   width: 100%;
-  border-radius: 18px;
+  border-radius: var(--radius);
   object-fit: cover;
-  transition: 0.25s ease;
+  transition: var(--transition);
 }
+
 .movieCard img:hover {
   transform: scale(1.03);
-  box-shadow: 0px 4px 12px var(--shadow);
+  box-shadow: 0px 4px 12px var(--shadow-color);
 }
-.dropdownWrapper {
-  position: relative;
-}
-.settingsDropdown {
-  position: absolute;
-  top: calc(100% + 12px);
-  right: 0px;
-  background: var(--surface); 
-  border-radius: 18px;
-  padding: 12px;
-  min-width: 190px;
-  border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  z-index: 9999;
-  animation: dropdownFade 0.25s ease;
-}
-.dropdownItem {
-  background: var(--surface); 
-  color: var(--text-color);
-  padding: 12px 24px;
-  font-size: 16px;
-  font-family: "Poppins", sans-serif;
-  letter-spacing: 0.2px;
-  border-radius: 18px;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  text-align: left;
-  transition: 0.25s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.dropdownItem:hover {
-  background: var(--hover);
-  transform: translateY(-3px);
-  box-shadow: 0px 4px 12px var(--shadow);
-}
-.logout {
-  color: red;
-}
-@keyframes dropdownFade {
-  from { opacity: 0; transform: translateY(-10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.removeButton {
-  margin-top: 8px;
-  width: 100%;
-  font-size: 16px;
-  padding: 12px 24px;
-  border-radius: 18px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  color: red;
-  font-family: "Poppins",sans-serif;
-  cursor: pointer;
-  transition: 0.25s ease;
-}
-.removeButton:hover {
-  background: var(--hover);
-  transform: translateY(-3px);
-  box-shadow: 0px 4px 12px var(--shadow);
-}
-.movieLayout {
-  display: grid;
-  grid-template-columns: 360px 1fr 280px;
-  gap: 32px;
-  margin-top: 48px;
-  animation: fadeIn 0.5s ease forwards;
-}
+
+/* =========================================
+   8. Movie Details
+   ========================================= */
 .posterImage {
   width: 100%;
-  border-radius: 18px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border); /* Added consistent border */
 }
+
 .movieTitle {
-  font-family: "Montserrat",sans-serif;
+  font-family: var(--font-display);
   text-transform: uppercase;
   font-size: 48px;
+  margin: 0 0 16px 0; /* Reset margins */
 }
+
 .tagRow {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 16px;
 }
+
 .tag {
   padding: 12px 24px;
   background: var(--surface);
-  border-radius: 18px;
+  border-radius: var(--radius);
   font-size: 16px;
   border: 1px solid var(--border);
 }
+
 .metaRow {
   display: flex;
   gap: 8px;
+  margin-bottom: 24px;
 }
+
 .overview {
   display: flex;
   text-align: left;
   margin-bottom: 36px;
+  line-height: 1.6;
 }
+
 .addBtn {
   padding: 12px 24px;
-  border-radius: 18px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: 0.25s ease;
   font-size: 16px;
   display: flex;
   gap: 8px;
   align-items: center;
-  font-family: "Poppins", sans-serif;
-  color: var(--text-color);
   margin-bottom: 24px;
   letter-spacing: 0.2px;
-  text-align: left;
+  width: fit-content;
 }
-.addBtn:hover {
-  background-color: var(--hover);
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px var(--shadow);
-}
+
 .addBtn.added {
-  background: var(--surface);
-  border-color: var(--border);
-  color: green;
+  color: #4caf50; /* Standard Green */
+  border-color: #4caf50;
 }
+
+/* Right Side Info Column */
 .sideInfo {
   background: var(--surface);
-  padding: 12px;
-  border-radius: 18px;
+  padding: 24px; /* Increased padding slightly */
+  border-radius: var(--radius);
   border: 1px solid var(--border);
   display: flex;
-  justify-content:center;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
+  height: fit-content;
 }
+
 .studioList {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 12px;
+  margin-top: 12px;
+  justify-content: center;
 }
+
 .studioTag {
   padding: 8px 16px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: var(--radius);
   font-size: 12px;
 }
-.tabs{
+
+/* =========================================
+   9. Tabs
+   ========================================= */
+.tabs {
   display: flex;
   gap: 8px;
   justify-content: center;
@@ -377,64 +359,93 @@ body{
 
 .tabBtn {
   padding: 12px 24px;
-  border-radius: 18px;
   font-size: 16px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text-color);
-  cursor: pointer;
-  transition: 0.25s ease;
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: "Poppins", sans-serif;
   letter-spacing: 0.2px;
-}
-
-.tabBtn:hover {
-  background: var(--hover);
-  transform: translateY(-3px);
-  box-shadow: 0px 4px 12px var(--shadow);
 }
 
 .tabBtn.active {
   background: var(--hover);
   border-color: var(--border);
   transform: translateY(-3px);
+  box-shadow: 0px 4px 12px var(--shadow-color);
 }
+
+/* =========================================
+   10. Dropdowns
+   ========================================= */
+.dropdownWrapper {
+  position: relative;
+}
+
+.settingsDropdown, .statusDropdownMenu {
+  position: absolute;
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 12px;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: var(--z-dropdown);
+  animation: dropdownFade 0.25s ease;
+}
+
+.settingsDropdown {
+  top: calc(100% + 12px);
+  right: 0;
+  min-width: 190px;
+}
+
+.statusDropdownMenu {
+  bottom: calc(100% + 12px);
+  width: 190px;
+}
+
+.dropdownItem {
+  padding: 12px 24px;
+  font-size: 16px;
+  letter-spacing: 0.2px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logout {
+  color: #ff4d4d; /* Standard Red */
+}
+
 .statusButton {
   display: flex;
   align-items: center;
   gap: 8px;
   width: 190px;
   padding: 12px 24px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  cursor: pointer;
-  transition: 0.25s ease;
-  color: var(--text-color);
   font-size: 16px;
-  font-family: "Poppins", sans-serif;
   letter-spacing: 0.2px;
   text-align: left;
 }
-.statusButton:hover {
-  background: var(--hover);
-  transform: translateY(-3px);
-  box-shadow: 0px 4px 12px var(--shadow);
+
+.removeButton {
+  margin-top: 8px;
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 24px;
+  color: #ff4d4d;
 }
-.statusDropdownMenu {
-  position: absolute;
-  bottom: calc(100% + 12px);
-  width: 190px;
-  padding: 12px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  animation: dropdownFade 0.25s ease;
-  z-index: 9999;
+
+/* =========================================
+   11. Animations
+   ========================================= */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dropdownFade {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

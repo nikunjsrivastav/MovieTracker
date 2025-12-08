@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import SettingsDropdown from "./SettingsDropdown";
+import SettingsDropdown from "./components/SettingsDropdown";
 export default function Results({theme,setTheme}) {
   const API_KEY = import.meta.env.VITE_TMDB_KEY;
   const [results, setResults] = useState([]);
@@ -32,9 +32,9 @@ export default function Results({theme,setTheme}) {
         <div className="iconButton"onClick={() => navigate("/Account")}><i className="fa-solid fa-user"></i></div>
         <SettingsDropdown theme={theme} setTheme={setTheme} />
       </div>
-      <h2 className="resultsTitle">
+      <label className="resultsTitle">
         Search results for: <b>{query}</b>
-      </h2>
+      </label>
       <div className="resultsGrid">
         {results.map(movie => (
           <div className="movieCard" key={movie.id} onClick={() => navigate(`/movie/${movie.id}`)}>

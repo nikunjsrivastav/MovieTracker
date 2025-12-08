@@ -4,7 +4,7 @@ import Home from "./Home.jsx";
 import Results from "./Results.jsx";
 import MovieDetails from "./MovieDetails.jsx";
 import WatchList from "./WatchList.jsx";
-import Layout from "./Layout";
+import Layout from "./components/Layout.jsx";
 export default function App() {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
     useEffect(() => {

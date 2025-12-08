@@ -1,6 +1,6 @@
 import { useState,useEffect} from "react";
 import { useNavigate } from "react-router-dom";
-import SettingsDropdown from "./SettingsDropdown";
+import SettingsDropdown from "./components/SettingsDropdown";
 export default function Home({theme,setTheme}) {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
@@ -9,8 +9,7 @@ export default function Home({theme,setTheme}) {
     navigate(`/results?query=${query}`);
   };
   return (
-    <div className="homePage">
-    <div className="container">
+    <div className="container homePage">
       <div className="iconBar">
         <div className="iconButton" onClick={() => navigate("/")}>
           <i className="fa-solid fa-house"></i>
@@ -20,6 +19,7 @@ export default function Home({theme,setTheme}) {
         <div className="iconButton"onClick={() => navigate("/Account")}><i className="fa-solid fa-user"></i></div>
         <SettingsDropdown theme={theme} setTheme={setTheme} />
       </div>
+      <div className="headingHome">
       <h1 className="title">Movie Tracker</h1>
       <p className="subtitle">Your Movie List and AI Movie Recommendation Website</p>
       <div className="searchBox">

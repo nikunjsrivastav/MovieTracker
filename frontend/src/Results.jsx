@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import SettingsDropdown from "./components/SettingsDropdown";
+import FloatingSearch from "./components/FloatingSearch";
 export default function Results({theme,setTheme}) {
   const API_KEY = import.meta.env.VITE_TMDB_KEY;
   const [results, setResults] = useState([]);
@@ -22,6 +23,7 @@ export default function Results({theme,setTheme}) {
   }, [query]);
   return (
     <div className="container resultsPage">
+      <FloatingSearch/>
       <div className="backButton" onClick={() => navigate(-1)}><i className="fa-solid fa-arrow-left"></i></div>
       <div className="iconBar">
         <div className="iconButton" onClick={() => navigate("/")}>

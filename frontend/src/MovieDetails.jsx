@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import SettingsDropdown from "./components/SettingsDropdown";
 import StatusDropdown from "./components/StatusDropdown";
-
+import FloatingSearch from "./components/FloatingSearch";
 export default function MovieDetails({ theme, setTheme }) {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -72,7 +72,7 @@ export default function MovieDetails({ theme, setTheme }) {
 
   return (
     <div className="container moviePage">
-      
+      <FloatingSearch/>
       <div className="backButton" onClick={() => navigate(-1)}>
         <i className="fa-solid fa-arrow-left"></i>
       </div>

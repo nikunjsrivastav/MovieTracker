@@ -4,13 +4,15 @@ export default function Layout({ children }) {
     const handleScroll = () => {
       const nav = document.querySelector(".iconBar");
       const back = document.querySelector(".backButton");
-
-      if (window.scrollY > 24) {
+      const search =document.querySelector(".floatingSearchBtn");
+      if (window.scrollY > 48) {
         nav?.classList.add("scrolled");
         back?.classList.add("scrolled");
+        search?.classList.add("scrolled");
       } else {
         nav?.classList.remove("scrolled");
         back?.classList.remove("scrolled");
+        search?.classList.remove("scrolled");
       }
     };
     window.addEventListener("scroll", handleScroll);

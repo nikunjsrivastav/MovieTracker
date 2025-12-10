@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SettingsDropdown from "./components/SettingsDropdown";
 import StatusDropdown from "./components/StatusDropdown";
-
+import FloatingSearch from "./components/FloatingSearch";
 export default function WatchList({ theme, setTheme }) {
   const navigate = useNavigate();
   const [list, setList] = useState([]);
@@ -39,7 +39,7 @@ export default function WatchList({ theme, setTheme }) {
   const filteredMovies = list.filter(movie => movie.status === activeTab);
   return (
     <div className="container resultsPage">
-
+      <FloatingSearch/>
       <div className="backButton" onClick={() => navigate(-1)}>
         <i className="fa-solid fa-arrow-left"></i>
       </div>

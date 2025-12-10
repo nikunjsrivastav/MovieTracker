@@ -1,21 +1,16 @@
-/* =========================================
-   1. Theme Variables & Settings
-   ========================================= */
+
 :root {
-  /* Layout Constants */
   --radius: 18px;
   --transition: 0.25s ease;
   --font-main: "Poppins", sans-serif;
   --font-display: "Montserrat", sans-serif;
-  
-  /* Z-Index Layers */
   --z-back: 900;
-  --z-nav: 1000;
+  --z-nav: 9999;
   --z-dropdown: 2000;
 }
 
 .light {
-  --bg-color: rgba(255, 255, 255, 0.75);
+  --bg-color: rgba(255, 255, 255, 0.5);
   --surface: rgba(222, 222, 222, 1);
   --border: rgba(0, 0, 0, 0.25);
   --hover: rgba(198, 198, 198, 1);
@@ -24,7 +19,7 @@
 }
 
 .dark {
-  --bg-color: rgba(32, 32, 32, 0.75);
+  --bg-color: rgba(32, 32, 32, 0.5);
   --surface: rgba(32, 32, 32, 1);
   --border: rgba(255, 255, 255, 0.25);
   --hover: rgb(56, 56, 56);
@@ -32,9 +27,6 @@
   --shadow-color: rgba(255, 255, 255, 0.12);
 }
 
-/* =========================================
-   2. Global Reset & Body
-   ========================================= */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -45,22 +37,13 @@ body {
   padding: 0;
   color: var(--text-color);
   min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center; /* Note: On small screens, 'flex-start' is often safer than 'center' */
   background:
     linear-gradient(var(--bg-color), var(--bg-color)),
     url("./assets/bg.jpg") no-repeat center/cover;
   background-attachment: fixed;
-  isolation: isolate;
   overflow-y: scroll;
 }
 
-/* =========================================
-   3. Shared Component Styles
-   ========================================= */
-
-/* Common style for all buttons and interactive cards */
 .iconButton, .backButton, .searchButton, 
 .addBtn, .tabBtn, .statusButton, .dropdownItem, .removeButton {
   background: var(--surface);
@@ -73,8 +56,6 @@ body {
   user-select: none;
   -webkit-user-select: none;
 }
-
-/* Common Hover Effect: Lift and Shadow */
 .iconButton:hover, .backButton:hover, .searchButton:hover, 
 .addBtn:hover, .tabBtn:hover, .statusButton:hover, 
 .dropdownItem:hover, .removeButton:hover, .searchInput:hover {
@@ -82,35 +63,31 @@ body {
   transform: translateY(-3px);
   box-shadow: 0px 4px 12px var(--shadow-color);
 }
-
-/* =========================================
-   4. Layout Containers
-   ========================================= */
 .container {
   padding: 32px;
   text-align: center;
-  width: 100%;
 }
-
-.resultsPage {
-  align-self: flex-start;
-  margin-top: 32px;
-  width: 100%;
-  max-width: 1400px;
+.container.homePage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
 }
-
+.container.resultsPage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding-top: 96px;
+}
 .movieLayout {
   display: grid;
   grid-template-columns: 360px 1fr 280px;
   gap: 32px;
-  margin-top: 48px;
+  padding-top: 96px;
   animation: fadeIn 0.5s ease forwards;
-  text-align: left; /* Reset alignment for detailed view */
+  text-align: left;
 }
-
-/* =========================================
-   5. Navigation & Header
-   ========================================= */
 .iconBar {
   position: fixed;
   top: 24px;
@@ -118,20 +95,16 @@ body {
   display: flex;
   gap: 12px;
   z-index: var(--z-nav);
-  padding: 12px;
   transition: var(--transition);
 }
-
 .iconBar:hover {
   opacity: 1;
   transform: scale(1);
 }
-
 .scrolled {
   transform: scale(0.75);
-  opacity: 0.25;
+  opacity: 0.50;
 }
-
 .iconButton {
   width: 56px;
   height: 56px;
@@ -145,32 +118,30 @@ body {
   width: 56px;
   height: 56px;
   position: fixed;
-  top: 36px;
-  left: 36px;
+  top: 24px;
+  left: 24px;
   z-index: var(--z-back);
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 20px;
 }
-
+.backButton:hover {
+  opacity: 1;
+  transform: scale(1);
+}
 .title {
   font-size: 56px;
   font-weight: 800;
   text-transform: uppercase;
   font-family: var(--font-display);
-  margin-bottom: 16px;
+  margin-bottom: 0px;
 }
-
 .subtitle {
   font-size: 20px;
   font-weight: 400;
   margin-bottom: 24px;
 }
-
-/* =========================================
-   6. Search Components
-   ========================================= */
 .searchBox {
   display: flex;
   justify-content: center;
@@ -178,7 +149,6 @@ body {
   gap: 12px;
   margin-bottom: 24px;
 }
-
 .searchInput {
   font-family: var(--font-main);
   font-size: 16px;
@@ -192,7 +162,6 @@ body {
   outline: none;
   border: 1px solid var(--border);
 }
-
 .searchInput::placeholder {
   font-size: 16px;
   font-family: var(--font-main);
@@ -202,39 +171,28 @@ body {
 
 .searchButton {
   height: 56px;
-  width: 130px;
+  width: 144px;
+  padding: 12px 24px;
   font-size: 16px;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
-
-.typedText {
-  font-size: 16px;
-  color: var(--text-color);
-}
-
-/* =========================================
-   7. Cards & Grids
-   ========================================= */
 .resultsTitle {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 400;
-  margin-bottom: 24px;
 }
-
 .resultsGrid {
-  padding-top: 24px;
-  margin-top: 24px;
+  padding-top: 32px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .movieCard {
-  width: 180px;
+  width: 200px;
   text-align: center;
   color: var(--text-color);
   animation: fadeIn 0.5s ease forwards;
@@ -249,39 +207,32 @@ body {
 
 .movieCard img {
   width: 100%;
-  border-radius: var(--radius);
+  aspect-ratio: 2 / 3;
   object-fit: cover;
+  border-radius: var(--radius);
   transition: var(--transition);
 }
-
 .movieCard img:hover {
   transform: scale(1.03);
   box-shadow: 0px 4px 12px var(--shadow-color);
 }
-
-/* =========================================
-   8. Movie Details
-   ========================================= */
 .posterImage {
   width: 100%;
   border-radius: var(--radius);
-  border: 1px solid var(--border); /* Added consistent border */
+  border: 1px solid var(--border);
 }
-
 .movieTitle {
   font-family: var(--font-display);
   text-transform: uppercase;
   font-size: 48px;
-  margin: 0 0 16px 0; /* Reset margins */
+  margin: 0 0 16px 0;
 }
-
 .tagRow {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
   margin-bottom: 16px;
 }
-
 .tag {
   padding: 12px 24px;
   background: var(--surface);
@@ -289,13 +240,11 @@ body {
   font-size: 16px;
   border: 1px solid var(--border);
 }
-
 .metaRow {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   margin-bottom: 24px;
 }
-
 .overview {
   display: flex;
   text-align: left;
@@ -307,38 +256,36 @@ body {
   padding: 12px 24px;
   font-size: 16px;
   display: flex;
-  gap: 8px;
+  gap: 12px;
   align-items: center;
   margin-bottom: 24px;
-  letter-spacing: 0.2px;
   width: fit-content;
 }
 
 .addBtn.added {
-  color: #4caf50; /* Standard Green */
+  color: #4caf50;
   border-color: #4caf50;
 }
 
-/* Right Side Info Column */
 .sideInfo {
   background: var(--surface);
-  padding: 24px; /* Increased padding slightly */
+  padding: 24px; 
   border-radius: var(--radius);
   border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: fit-content;
+  justify-content: center;
+  height: auto;
 }
 
 .studioList {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 12px;
   margin-top: 12px;
   justify-content: center;
 }
-
 .studioTag {
   padding: 8px 16px;
   background: var(--surface);
@@ -346,13 +293,9 @@ body {
   border-radius: var(--radius);
   font-size: 12px;
 }
-
-/* =========================================
-   9. Tabs
-   ========================================= */
 .tabs {
   display: flex;
-  gap: 8px;
+  gap: 12px;
   justify-content: center;
   margin-bottom: 24px;
 }
@@ -362,24 +305,19 @@ body {
   font-size: 16px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  letter-spacing: 0.2px;
+  gap: 12px;
 }
 
 .tabBtn.active {
   background: var(--hover);
-  border-color: var(--border);
   transform: translateY(-3px);
   box-shadow: 0px 4px 12px var(--shadow-color);
 }
 
-/* =========================================
-   10. Dropdowns
-   ========================================= */
 .dropdownWrapper {
   position: relative;
-}
 
+}
 .settingsDropdown, .statusDropdownMenu {
   position: absolute;
   background: var(--surface);
@@ -392,54 +330,49 @@ body {
   z-index: var(--z-dropdown);
   animation: dropdownFade 0.25s ease;
 }
-
 .settingsDropdown {
   top: calc(100% + 12px);
   right: 0;
-  min-width: 190px;
+  width: 240px;
 }
-
+.movieCard .statusDropdownMenu,
+.movieCard .statusButton{
+  width: 100%;
+}
 .statusDropdownMenu {
+  width: 240px;
   bottom: calc(100% + 12px);
-  width: 190px;
 }
-
 .dropdownItem {
   padding: 12px 24px;
   font-size: 16px;
-  letter-spacing: 0.2px;
   text-align: left;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 12px;
 }
-
 .logout {
-  color: #ff4d4d; /* Standard Red */
+  color: #ff4d4d;
 }
 
 .statusButton {
   display: flex;
   align-items: center;
-  gap: 8px;
-  width: 190px;
+  gap: 12px;
   padding: 12px 24px;
   font-size: 16px;
-  letter-spacing: 0.2px;
-  text-align: left;
+  text-align: center;
+  justify-content: center;
+  width: 240px; 
 }
-
 .removeButton {
-  margin-top: 8px;
   width: 100%;
+  margin-top: 12px;
   font-size: 16px;
   padding: 12px 24px;
   color: #ff4d4d;
+  justify-content: center; 
 }
-
-/* =========================================
-   11. Animations
-   ========================================= */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }

@@ -28,6 +28,7 @@ export default function Home({theme,setTheme}) {
           placeholder="Enter the movie name..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && goToResults()} 
           className="searchInput"
         />
         <button className="searchButton" onClick={goToResults}>

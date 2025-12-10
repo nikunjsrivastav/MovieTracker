@@ -43,7 +43,7 @@ export default function StatusDropdown({ status, onChange }) {
               }}
             >
               <i className={opt.icon}></i>
-              <span>{opt.label}</span>
+              <label>{opt.label}</label>
             </button>
           ))}
         </div>

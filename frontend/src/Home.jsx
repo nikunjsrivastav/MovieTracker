@@ -1,11 +1,17 @@
-import { useState,useEffect} from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SettingsDropdown from "./components/SettingsDropdown";
+import { saveSearch, getSearchHistory } from "./components/SearchHistory";
 export default function Home({theme,setTheme}) {
   const [query, setQuery] = useState("");
+  const [history, setHistory] = useState([]);
   const navigate = useNavigate();
+  useEffect(() => {
+    setHistory(getSearchHistory());
+  }, []);
   const goToResults = () => {
-    if (!query) return;
+    if (!query.trim()) return;
+    saveSearch(query);
     navigate(`/results?query=${query}`);
   };
   return (
@@ -23,12 +29,13 @@ export default function Home({theme,setTheme}) {
       <h1 className="title">Movie Tracker</h1>
       <p className="subtitle">Your Movie List and AI Movie Recommendation Website</p>
       <div className="searchBox">
-        <input 
+        <input
           type="text"
           placeholder="Enter the movie name..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && goToResults()} 
+          onFocus={() => setHistory(getSearchHistory())}
+          onKeyDown={(e) => e.key === "Enter" && goToResults()}
           className="searchInput"
         />
         <button className="searchButton" onClick={goToResults}>
@@ -36,6 +43,27 @@ export default function Home({theme,setTheme}) {
           <label>Search</label>
         </button>
       </div>
+      {history.length > 0 && (
+        <div className="searchHistory">
+              <div className="searchHistoryInner">
+              {history.map((item, i) => (
+                <div
+                  key={i}
+                  className="historyItem"
+                  onClick={() => {
+                    setQuery(item);
+                    saveSearch(item);
+                    navigate(`/results?query=${item}`);
+                    setOpen(false);
+                  }}
+                >
+                  <i className="fa-solid fa-clock-rotate-left"></i>
+                  {item}
+                </div>
+              ))}
+              </div>
+          </div>
+        )}
     </div>
     </div>
   );

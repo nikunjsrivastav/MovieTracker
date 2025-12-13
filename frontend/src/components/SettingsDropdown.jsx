@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from "react";
+import { clearSearchHistory } from "./SearchHistory";
+
 export default function SettingsDropdown({ theme, setTheme }) {
   const [open, setOpen] = useState(false);
   const ref = useRef();
@@ -14,6 +16,13 @@ export default function SettingsDropdown({ theme, setTheme }) {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
+  const handleClearHistory = () => {
+  const ok = window.confirm("Clear all search history?");
+  if (!ok) return;
+  clearSearchHistory();
+  setOpen(false);
+  };
+
   return (
     <div className="dropdownWrapper" ref={ref}>
       <div className="iconButton" onClick={() => setOpen(!open)}>
@@ -26,7 +35,7 @@ export default function SettingsDropdown({ theme, setTheme }) {
     <span>{theme === "dark" ? "Light Mode" : "Dark Mode"}</span>
   </button>
 
-  <button className="dropdownItem">
+  <button className="dropdownItem" onClick={handleClearHistory}>
     <i className="fa-solid fa-broom"></i>
     <span>Clear History</span>
   </button>

@@ -483,3 +483,46 @@ body {
 .historyItem:hover {
   background: var(--hover);
 }
+.statsSection {
+  margin-top: 32px;
+}
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.statGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+}
+.statCard {
+  background: var(--surface);
+  padding: 14px;
+  border-radius: 16px;
+  text-align: center;
+}
+.statValue {
+  font-size: 24px;
+  font-weight: 600;
+}
+.statLabel {
+  font-size: 13px;
+  opacity: 0.7;
+}
+.insightBox {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--hover);
+  font-size: 14px;
+}
+.emptyState {
+  margin-top: 48px;
+  text-align: center;
+  opacity: 0.75;
+}
+.emptyState span {
+  font-size: 13px;
+  opacity: 0.6;
+}

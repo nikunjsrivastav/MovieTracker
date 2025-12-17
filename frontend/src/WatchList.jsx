@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import SettingsDropdown from "./components/SettingsDropdown";
 import StatusDropdown from "./components/StatusDropdown";
 import FloatingSearch from "./components/FloatingSearch";
+import IconBar from "./components/IconBar";
 export default function WatchList({ theme, setTheme }) {
   const navigate = useNavigate();
   const [list, setList] = useState([]);
@@ -43,23 +43,7 @@ export default function WatchList({ theme, setTheme }) {
       <div className="backButton" onClick={() => navigate(-1)}>
         <i className="fa-solid fa-arrow-left"></i>
       </div>
-
-      <div className="iconBar">
-        <div className="iconButton" onClick={() => navigate("/")}>
-          <i className="fa-solid fa-house"></i>
-        </div>
-        <div className="iconButton" onClick={() => navigate("/Recommended")}>
-          <i className="fa-solid fa-star"></i>
-        </div>
-        <div className="iconButton" onClick={() => navigate("/WatchList")}>
-          <i className="fa-solid fa-bookmark"></i>
-        </div>
-        <div className="iconButton" onClick={() => navigate("/Account")}>
-          <i className="fa-solid fa-user"></i>
-        </div>
-        <SettingsDropdown theme={theme} setTheme={setTheme} />
-      </div>
-
+      <IconBar theme={theme} setTheme={setTheme}/>
       <h2 className="resultsTitle">Your Watchlist</h2>
       <div className="tabs">
         {TABS.map(tab => (

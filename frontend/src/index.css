@@ -463,6 +463,7 @@ body {
   opacity: 0.8;
 }
 .searchHistory {
+  padding: 8px;
   margin-top: 8px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
@@ -474,6 +475,9 @@ body {
   overflow-y: auto;
 }
 .historyItem {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin: 8px;
   padding: 8px 12px;
   cursor: pointer;
   display: flex;

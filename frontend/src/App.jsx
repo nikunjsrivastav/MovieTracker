@@ -57,7 +57,7 @@ export default function App() {
     const handleMoreNav = (e) => {
       const title = e.detail.title;
       if (title === 'Popular' || title === 'Trending This Week') navigate('popular');
-      else if (title === 'Top Rated') navigate('top_rated');
+      else if (title === 'Top Rated' || title === 'Top Rated On IMDb') navigate('top_rated');
       else if (title === 'Now Playing') navigate('now_playing');
     };
 

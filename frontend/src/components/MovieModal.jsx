@@ -101,13 +101,12 @@ export default function MovieModal({ movieId, onClose }) {
   return (
     <div className={`modal-overlay ${isClosing ? 'fade-out' : ''}`} onClick={(e) => { if (e.target.id === 'modal-overlay') handleClose(); }} id="modal-overlay">
       <div className="modal-container" style={isClosing ? { animation: 'modalScaleDown 0.2s ease forwards' } : {}}>
+        <button className="modal-close" onClick={handleClose}>{CLOSE_ICON}</button>
         {backdropUrl ? (
           <img className="modal-backdrop-img" src={backdropUrl} alt={movie.title} />
         ) : (
           <div style={{ height: '80px' }}></div>
         )}
-        
-        <button className="modal-close" onClick={handleClose}>{CLOSE_ICON}</button>
         
         <div className="modal-body">
           <h2 className="modal-title">{movie.title}</h2>

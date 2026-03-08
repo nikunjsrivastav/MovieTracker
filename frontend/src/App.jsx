@@ -23,6 +23,14 @@ export default function App() {
   };
 
   useEffect(() => {
+    // Check if bg.jpg exists (using a simple image load)
+    const img = new Image();
+    img.src = '/src/assets/bg.jpg';
+    img.onload = () => document.body.classList.add('has-custom-bg');
+    img.onerror = () => document.body.classList.remove('has-custom-bg');
+  }, []);
+
+  useEffect(() => {
     const handleSearchNav = (e) => navigate('search', { query: e.detail.query });
     const handleMoreNav = (e) => {
       const title = e.detail.title;

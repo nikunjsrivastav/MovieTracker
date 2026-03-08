@@ -7,6 +7,15 @@ const CLOSE_ICON = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"
 const STAR_ICON_OUTLINE = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24"><path d="M239.2,97.29a16,16,0,0,0-13.81-11L166,81.17,142.72,25.81h0a15.95,15.95,0,0,0-29.44,0L90.07,81.17,30.61,86.32a16,16,0,0,0-9.11,28.06L66.61,153.8,53.09,212.34a16,16,0,0,0,23.84,17.34l51.11-31,51.11,31a16,16,0,0,0,23.84-17.34l-13.51-58.6,45.1-39.36A16,16,0,0,0,239.2,97.29ZM128,168.08a16,16,0,0,0-8.29,2.3L76,196.88l11.66-50.56a16,16,0,0,0-4.9-15.08L43.83,97.27l51.3-4.45a16,16,0,0,0,12.79-9.3L128,36.56l20.08,47a16,16,0,0,0,12.79,9.3l51.3,4.45-38.93,34a16,16,0,0,0-4.9,15.08l11.66,50.56-43.71-26.5A16,16,0,0,0,128,168.08Z" fill="currentColor"></path></svg>;
 const STAR_ICON_FILLED = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24"><path d="M234.29,114.85l-45,38.83L203,211.75a16.4,16.4,0,0,1-24.5,17.82L128,198.49,77.47,229.57A16.4,16.4,0,0,1,53,211.75l13.76-58.07-45-38.83A16.46,16.46,0,0,1,31.08,86l59-4.76,22.76-55.08a16.36,16.36,0,0,1,30.27,0l22.75,55.08,59,4.76a16.46,16.46,0,0,1,9.37,28.86Z" fill="currentColor"></path></svg>;
 
+const STATUS_ICONS = {
+  watching: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="16" height="16"><path d="M247.31,124.76c-4.22-5.12-51.57-60.76-119.31-60.76S12.91,119.64,8.69,124.76a8,8,0,0,0,0,6.48c4.22,5.12,51.57,60.76,119.31,60.76s115.09-55.64,119.31-60.76A8,8,0,0,0,247.31,124.76ZM128,176a48,48,0,1,1,48-48A48.06,48.06,0,0,1,128,176Zm0-80a32,32,0,1,0,32,32A32,32,0,0,0,128,96Z" fill="currentColor"></path></svg>,
+  completed: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="16" height="16"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z" fill="currentColor"></path></svg>,
+  plan_to_watch: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="16" height="16"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm64-88a8,8,0,0,1-8,8H128a8,8,0,0,1-8-8V72a8,8,0,0,1,16,0v48h48A8,8,0,0,1,192,128Z" fill="currentColor"></path></svg>,
+  on_hold: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="16" height="16"><path d="M112,64V192a8,8,0,0,1-16,0V64a8,8,0,0,1,16,0Zm48-8a8,8,0,0,0-8,8V192a8,8,0,0,0,16,0V64A8,8,0,0,0,160,56Z" fill="currentColor"></path></svg>,
+  favourites: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="16" height="16"><path d="M240,94c0,70-103.79,126.66-108.21,129a8,8,0,0,1-7.58,0C119.79,220.66,16,164,16,94A62.07,62.07,0,0,1,78,32c22.59,0,41.94,17.31,50,32,8.06-14.69,27.41-32,50-32A62.07,62.07,0,0,1,240,94Z" fill="currentColor"></path></svg>,
+  dropped: <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="16" height="16"><path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z" fill="currentColor"></path></svg>
+};
+
 export default function MovieModal({ movieId, onClose }) {
   const [movie, setMovie] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -135,7 +144,10 @@ export default function MovieModal({ movieId, onClose }) {
                 className={`custom-dropdown-btn ${isDropdownOpen ? 'active' : ''}`}
                 onClick={(e) => { e.stopPropagation(); setIsDropdownOpen(!isDropdownOpen); }}
               >
-                {tracked?.status ? tracked.status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Add to List...'}
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {tracked?.status && STATUS_ICONS[tracked.status]}
+                  {tracked?.status ? tracked.status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : 'Add to List...'}
+                </span>
                 <svg className="custom-dropdown-icon" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
               </button>
               
@@ -156,7 +168,9 @@ export default function MovieModal({ movieId, onClose }) {
                       setIsDropdownOpen(false);
                     }}
                   >
-                    {opt.label}
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      {STATUS_ICONS[opt.value]} {opt.label}
+                    </span>
                   </div>
                 ))}
               </div>

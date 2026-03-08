@@ -15,12 +15,28 @@ export default function App() {
   const [pageProps, setPageProps] = useState({});
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [theme, setTheme] = useState(() => localStorage.getItem('app_theme') || 'dark');
+  const [theme, setTheme] = useState(() => localStorage.getItem('app_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'));
+  const [accentColor, setAccentColor] = useState(() => localStorage.getItem('app_accent') || '#0A84FF');
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('app_theme', theme);
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.style.setProperty('--accent-primary', accentColor);
+    document.documentElement.style.setProperty('--accent-primary-hover', accentColor);
+
+    // Calculate perceived brightness to determine text color
+    const hex = accentColor.replace('#', '');
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+    document.documentElement.style.setProperty('--accent-text', luminance > 0.6 ? '#000000' : '#ffffff');
+
+    localStorage.setItem('app_accent', accentColor);
+  }, [accentColor]);
 
   const navigate = (page, props = {}) => {
     setCurrentPage(page);
@@ -44,10 +60,10 @@ export default function App() {
       else if (title === 'Top Rated') navigate('top_rated');
       else if (title === 'Now Playing') navigate('now_playing');
     };
-    
+
     document.addEventListener('navigate-search', handleSearchNav);
     document.addEventListener('navigate-more', handleMoreNav);
-    
+
     return () => {
       document.removeEventListener('navigate-search', handleSearchNav);
       document.removeEventListener('navigate-more', handleMoreNav);
@@ -63,23 +79,23 @@ export default function App() {
       case 'top_rated':
       case 'now_playing':
         return <Browse category={currentPage} onMovieClick={(m) => setSelectedMovieId(m.id)} />;
-      case 'settings': return <Settings theme={theme} setTheme={setTheme} />;
+      case 'settings': return <Settings theme={theme} setTheme={setTheme} accentColor={accentColor} setAccentColor={setAccentColor} />;
       default: return <Home onMovieClick={(m) => setSelectedMovieId(m.id)} />;
     }
   };
 
   return (
     <div id="app" className={isSidebarCollapsed ? 'sidebar-collapsed' : ''}>
-      <Sidebar 
-        currentPage={currentPage} 
-        currentFilter={pageProps.filter} 
-        navigate={navigate} 
+      <Sidebar
+        currentPage={currentPage}
+        currentFilter={pageProps.filter}
+        navigate={navigate}
         isCollapsed={isSidebarCollapsed}
         onToggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
       <main className="app-main">
-        <Header 
-          onMovieClick={(m) => setSelectedMovieId(m.id)} 
+        <Header
+          onMovieClick={(m) => setSelectedMovieId(m.id)}
           onToggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
         <div className="app-content">
@@ -88,9 +104,9 @@ export default function App() {
       </main>
 
       {selectedMovieId && (
-        <MovieModal 
-          movieId={selectedMovieId} 
-          onClose={() => setSelectedMovieId(null)} 
+        <MovieModal
+          movieId={selectedMovieId}
+          onClose={() => setSelectedMovieId(null)}
         />
       )}
     </div>

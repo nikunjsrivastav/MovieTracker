@@ -61,7 +61,7 @@ export default function Sidebar({ currentPage, currentFilter, navigate, isCollap
         <div className="sidebar-logo-icon">
           {ICONS.logo}
         </div>
-        {!isCollapsed && <h1>MovieTracky</h1>}
+        {!isCollapsed && <h1>MovieTracker</h1>}
         <button 
           className="sidebar-toggle-btn" 
           onClick={onToggleSidebar}

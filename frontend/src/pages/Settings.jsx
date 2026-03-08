@@ -5,7 +5,7 @@ import { useWatchlist } from '../store/watchlist.jsx';
 const EXPORT_ICON = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="16" height="16" fill="currentColor"><path d="M222.8,118.8l-88,88a8,8,0,0,1-11.32,0l-88-88A8,8,0,0,1,41.2,107.5L120,186.3V24A8,8,0,0,1,136,24V186.3l78.8-78.8a8,8,0,0,1,11.32,11.32Z"></path><path d="M216,224H40a8,8,0,0,1,0-16H216a8,8,0,0,1,0,16Z"></path></svg>;
 const IMPORT_ICON = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="16" height="16" fill="currentColor"><path d="M222.8,137.2A8,8,0,0,1,216,144l-78.8-78.8V232a8,8,0,0,1-16,0V65.2L42.4,144A8,8,0,0,1,31.2,132.8l88-88a8,8,0,0,1,11.32,0l88,88A8,8,0,0,1,222.8,137.2Z"></path><path d="M216,224H40a8,8,0,0,1,0-16H216a8,8,0,0,1,0,16Z"></path></svg>;
 
-export default function Settings() {
+export default function Settings({ theme, setTheme }) {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('tmdb_api_key') || '');
   const { exportData, importData, clearAll } = useWatchlist();
   const { showToast } = useToast();
@@ -113,6 +113,25 @@ export default function Settings() {
             style={{ display: 'none' }} 
             onChange={handleImportFile}
           />
+        </div>
+      </div>
+
+      <div className="settings-group">
+        <label>Appearance</label>
+        <p>Switch between the premium Dark Glass aesthetic and the clean Light Glass aesthetic.</p>
+        <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
+          <button 
+            className={`btn ${theme === 'light' ? 'btn-primary' : 'btn-ghost'} btn-sm`}
+            onClick={() => setTheme('light')}
+          >
+            Light Mode
+          </button>
+          <button 
+            className={`btn ${theme === 'dark' ? 'btn-primary' : 'btn-ghost'} btn-sm`}
+            onClick={() => setTheme('dark')}
+          >
+            Dark Mode
+          </button>
         </div>
       </div>
 

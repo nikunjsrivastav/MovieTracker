@@ -15,6 +15,12 @@ export default function App() {
   const [pageProps, setPageProps] = useState({});
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [theme, setTheme] = useState(() => localStorage.getItem('app_theme') || 'dark');
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('app_theme', theme);
+  }, [theme]);
 
   const navigate = (page, props = {}) => {
     setCurrentPage(page);
@@ -57,7 +63,7 @@ export default function App() {
       case 'top_rated':
       case 'now_playing':
         return <Browse category={currentPage} onMovieClick={(m) => setSelectedMovieId(m.id)} />;
-      case 'settings': return <Settings />;
+      case 'settings': return <Settings theme={theme} setTheme={setTheme} />;
       default: return <Home onMovieClick={(m) => setSelectedMovieId(m.id)} />;
     }
   };

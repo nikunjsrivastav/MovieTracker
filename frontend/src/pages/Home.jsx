@@ -151,7 +151,7 @@ export default function Home({ onMovieClick }) {
 
       <MovieCarousel title="Trending This Week" movies={data.trending.slice(5)} onMovieClick={onMovieClick} />
       <MovieCarousel title="Popular" movies={data.popular} onMovieClick={onMovieClick} />
-      <MovieCarousel title="Top Rated" movies={data.topRated} onMovieClick={onMovieClick} />
+      <MovieCarousel title="Top Rated On IMDb" movies={data.topRated} onMovieClick={onMovieClick} />
       <MovieCarousel title="Now Playing" movies={data.nowPlaying} onMovieClick={onMovieClick} />
     </div>
   );

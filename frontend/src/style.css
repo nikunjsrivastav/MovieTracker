@@ -421,18 +421,26 @@ html[data-theme="light"] .btn-primary:hover {
 
 /* Card status badge: icon-only, expand on hover */
 .movie-card .card-status-badge {
-  font-size: 0.45rem;
   position: absolute;
   top: 10px;
   left: 10px;
-  padding: 0.3rem;
+  padding: 4px;
+  font-size: var(--font-xs);
+  letter-spacing: 0;
+  text-transform: none;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   overflow: hidden;
-  max-width: 28px;
+  max-width: 26px;
+  max-height: 26px;
   z-index: 2;
-  transition: max-width 0.3s ease, padding 0.3s ease;
+  transition: max-width 0.3s ease, max-height 0.3s ease, padding 0.3s ease;
 }
 
 .movie-card .card-status-badge svg {
+  width: 14px;
+  height: 14px;
   flex-shrink: 0;
 }
 
@@ -442,8 +450,9 @@ html[data-theme="light"] .btn-primary:hover {
 }
 
 .movie-card:hover .card-status-badge {
-  max-width: 110px;
-  padding: 0.25rem 0.6rem;
+  max-width: 140px;
+  max-height: 40px;
+  padding: 4px 8px;
 }
 
 .movie-card:hover .card-status-badge .badge-label {
@@ -1151,6 +1160,10 @@ html[data-theme="light"] .search-dropdown {
   background: rgba(255, 255, 255, 0.08);
 }
 
+html[data-theme="light"] .search-result-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
 .search-result-item img {
   width: 44px;
   height: 66px;
@@ -1469,7 +1482,7 @@ html[data-theme="light"] .custom-dropdown-item:hover {
 
 .custom-dropdown-item.selected {
   background: var(--accent-primary);
-  color: #fff;
+  color: var(--accent-text, #fff);
   font-weight: 600;
 }
 

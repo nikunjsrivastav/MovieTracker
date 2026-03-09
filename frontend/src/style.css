@@ -291,15 +291,6 @@ html[data-theme="light"] .app-sidebar {
   padding: var(--space-xl) 0;
 }
 
-.sidebar-logo.scrolled {
-  border-bottom: 1px solid var(--glass-border);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-html[data-theme="light"] .sidebar-logo.scrolled {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
 .sidebar-collapsed .app-main {
   margin-left: 80px;
   width: calc(100% - 80px);
@@ -1002,11 +993,12 @@ html[data-theme="light"] .sidebar-logo-icon svg {
   pointer-events: none;
   z-index: 10;
   color: var(--text-tertiary);
+}
+.sidebar-scroll-indicator svg{
   animation: bounce 2s infinite ease-in-out;
 }
-
 html[data-theme="light"] .sidebar-scroll-indicator {
-  background: linear-gradient(to top, rgba(245, 245, 245, 1) 0%, rgba(245, 245, 245, 0) 100%);
+  background: linear-gradient(to top, rgba(245, 245, 245, 0.4) 0%, rgba(245, 245, 245, 0) 100%);
 }
 
 @keyframes bounce {

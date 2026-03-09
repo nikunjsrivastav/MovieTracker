@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { NavLink } from 'react-router-dom';
 import { useWatchlist } from '../store/watchlist.jsx';
 
@@ -40,6 +40,24 @@ const BROWSE_ITEMS = [
 export default function Sidebar({ isCollapsed, onToggleSidebar }) {
   const { getStats } = useWatchlist();
   const stats = getStats();
+  
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(true);
+  const navRef = useRef(null);
+
+  const checkScroll = () => {
+    if (navRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } = navRef.current;
+      setIsScrolled(scrollTop > 0);
+      setIsAtBottom(scrollTop + clientHeight >= scrollHeight - 10);
+    }
+  };
+
+  useEffect(() => {
+    checkScroll();
+    window.addEventListener('resize', checkScroll);
+    return () => window.removeEventListener('resize', checkScroll);
+  }, []);
 
   const handleNavClick = () => {
     document.getElementById('sidebar')?.classList.remove('open');
@@ -66,7 +84,7 @@ export default function Sidebar({ isCollapsed, onToggleSidebar }) {
 
   return (
     <aside className={`app-sidebar ${isCollapsed ? 'collapsed' : ''}`} id="sidebar">
-      <div className={`sidebar-logo ${isCollapsed ? 'collapsed' : ''}`}>
+      <div className={`sidebar-logo ${isCollapsed ? 'collapsed' : ''} ${isScrolled ? 'scrolled' : ''}`}>
         <div className="sidebar-logo-icon">
           {ICONS.logo}
         </div>
@@ -80,38 +98,52 @@ export default function Sidebar({ isCollapsed, onToggleSidebar }) {
           {isCollapsed ? ICONS.expand : ICONS.collapse}
         </button>
       </div>
-      <nav className="sidebar-nav">
-        {!isCollapsed && <div className="sidebar-section-title">Menu</div>}
-        {MENU_ITEMS.map(item => (
-          <NavItem 
-            key={item.id} 
-            to={item.id === 'home' ? '/' : `/${item.id}`} 
-            icon={item.icon} 
-            label={item.label} 
-            badge={item.id === 'mylist' ? stats.total : 0} 
-            customColor=""
-          />
-        ))}
+      <nav className="sidebar-nav" ref={navRef} onScroll={checkScroll}>
+        <div className="sidebar-group">
+          {!isCollapsed && <div className="sidebar-section-title">Menu</div>}
+          {MENU_ITEMS.map(item => (
+            <NavItem 
+              key={item.id} 
+              to={item.id === 'home' ? '/' : `/${item.id}`} 
+              icon={item.icon} 
+              label={item.label} 
+              badge={item.id === 'mylist' ? stats.total : 0} 
+              customColor=""
+            />
+          ))}
+        </div>
 
-        {!isCollapsed && <div className="sidebar-section-title" style={{ marginTop: 'var(--space-md)' }}>Browse</div>}
-        {BROWSE_ITEMS.map(item => (
-          <NavItem 
-            key={item.id} 
-            to={item.id === 'genres' ? '/genres' : `/browse/${item.id}`} 
-            icon={item.icon} 
-            label={item.label} 
-            customColor="" 
-          />
-        ))}
+        <div className="sidebar-group">
+          {!isCollapsed && <div className="sidebar-section-title" style={{ marginTop: 'var(--space-md)' }}>Browse</div>}
+          {BROWSE_ITEMS.map(item => (
+            <NavItem 
+              key={item.id} 
+              to={item.id === 'genres' ? '/genres' : `/browse/${item.id}`} 
+              icon={item.icon} 
+              label={item.label} 
+              customColor="" 
+            />
+          ))}
+        </div>
 
-        {!isCollapsed && <div className="sidebar-section-title" style={{ marginTop: 'var(--space-md)' }}>Tracking</div>}
-        <NavItem to="/mylist/watching" icon={ICONS.watching} label="Watching" badge={stats.watching} customColor="#0A84FF" />
-        <NavItem to="/mylist/completed" icon={ICONS.completed} label="Completed" badge={stats.completed} customColor="#30D158" />
-        <NavItem to="/mylist/plan_to_watch" icon={ICONS.plan_to_watch} label="Plan to Watch" badge={stats.plan_to_watch} customColor="#FF9F0A" />
-        <NavItem to="/mylist/on_hold" icon={ICONS.on_hold} label="On Hold" badge={stats.on_hold} customColor="#FFD60A" />
-        <NavItem to="/mylist/dropped" icon={ICONS.dropped} label="Dropped" badge={stats.dropped} customColor="#FF453A" />
-        <NavItem to="/mylist/favourites" icon={ICONS.favourites} label="Favourites" badge={stats.favourites} customColor="#BF5AF2" />
+        <div className="sidebar-group">
+          {!isCollapsed && <div className="sidebar-section-title" style={{ marginTop: 'var(--space-md)' }}>Tracking</div>}
+          <NavItem to="/mylist/watching" icon={ICONS.watching} label="Watching" badge={stats.watching} customColor="#0A84FF" />
+          <NavItem to="/mylist/completed" icon={ICONS.completed} label="Completed" badge={stats.completed} customColor="#30D158" />
+          <NavItem to="/mylist/plan_to_watch" icon={ICONS.plan_to_watch} label="Plan to Watch" badge={stats.plan_to_watch} customColor="#FF9F0A" />
+          <NavItem to="/mylist/on_hold" icon={ICONS.on_hold} label="On Hold" badge={stats.on_hold} customColor="#FFD60A" />
+          <NavItem to="/mylist/dropped" icon={ICONS.dropped} label="Dropped" badge={stats.dropped} customColor="#FF453A" />
+          <NavItem to="/mylist/favourites" icon={ICONS.favourites} label="Favourites" badge={stats.favourites} customColor="#BF5AF2" />
+        </div>
       </nav>
+
+      {!isAtBottom && !isCollapsed && (
+        <div className="sidebar-scroll-indicator">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      )}
     </aside>
   );
 }

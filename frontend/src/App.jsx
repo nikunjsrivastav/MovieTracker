@@ -72,13 +72,15 @@ export default function App() {
 
   const renderPage = () => {
     switch (currentPage) {
-      case 'home': return <Home onMovieClick={(m) => setSelectedMovieId(m.id)} />;
+      case 'home': return <Home onMovieClick={(m) => setSelectedMovieId(m.id)} onNavigate={navigate} />;
       case 'mylist': return <MyList filter={pageProps.filter || 'all'} onMovieClick={(m) => setSelectedMovieId(m.id)} onNavigate={navigate} />;
       case 'search': return <Search query={pageProps.query || ''} onMovieClick={(m) => setSelectedMovieId(m.id)} />;
       case 'popular':
       case 'top_rated':
       case 'now_playing':
         return <Browse category={currentPage} onMovieClick={(m) => setSelectedMovieId(m.id)} />;
+      case 'genre':
+        return <Browse category="genre" genreId={pageProps.genreId} genreName={pageProps.genreName} onMovieClick={(m) => setSelectedMovieId(m.id)} />;
       case 'settings': return <Settings theme={theme} setTheme={setTheme} accentColor={accentColor} setAccentColor={setAccentColor} />;
       default: return <Home onMovieClick={(m) => setSelectedMovieId(m.id)} />;
     }

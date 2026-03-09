@@ -68,3 +68,7 @@ export async function getMovieDetails(id) {
 export async function getGenres() {
   return fetchTMDB('/genre/movie/list');
 }
+
+export async function getMoviesByGenre(genreId, page = 1) {
+  return fetchTMDB('/discover/movie', { with_genres: genreId, page });
+}

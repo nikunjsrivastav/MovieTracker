@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getPopular, getTopRated, getNowPlaying, hasApiKey } from '../api/tmdb.js';
+import { getPopular, getTopRated, getNowPlaying, getMoviesByGenre, hasApiKey } from '../api/tmdb.js';
 import { MovieGrid, SkeletonCards } from '../components/MovieCard.jsx';
 
 const PAGE_CONFIG = {
@@ -11,7 +11,7 @@ const PAGE_CONFIG = {
 const EMPTY_ICON = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="64" height="64" fill="currentColor"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path></svg>;
 const DANGER_ICON = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="64" height="64" fill="var(--accent-danger)"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm37.66,130.34a8,8,0,0,1-11.32,11.32L128,139.31l-26.34,26.35a8,8,0,0,1-11.32-11.32L116.69,128,90.34,101.66a8,8,0,0,1,11.32-11.32L128,116.69l26.34-26.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>;
 
-export default function Browse({ category, onMovieClick }) {
+export default function Browse({ category, genreId, genreName, onMovieClick }) {
   const [movies, setMovies] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -19,7 +19,9 @@ export default function Browse({ category, onMovieClick }) {
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState('');
 
-  const config = PAGE_CONFIG[category];
+  const config = category === 'genre' 
+    ? { title: `${genreName} Movies`, fetcher: (page) => getMoviesByGenre(genreId, page) }
+    : PAGE_CONFIG[category];
 
   useEffect(() => {
     setMovies([]);

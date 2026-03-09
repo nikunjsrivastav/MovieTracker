@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { getTrending, getPopular, getTopRated, getNowPlaying, IMG_SIZES, hasApiKey } from '../api/tmdb.js';
 import { MovieCarousel, SkeletonCarousel } from '../components/MovieCard.jsx';
+import GenreScroller from '../components/GenreScroller.jsx';
 
 const EMPTY_ICON = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="64" height="64" fill="currentColor"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path></svg>;
 
-export default function Home({ onMovieClick }) {
+export default function Home({ onMovieClick, onNavigate }) {
   const [data, setData] = useState({ trending: [], popular: [], topRated: [], nowPlaying: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -92,6 +93,7 @@ export default function Home({ onMovieClick }) {
   }
 
   const heroMovies = data.trending.slice(0, 5);
+  const moviePool = [...data.trending, ...data.popular, ...data.topRated, ...data.nowPlaying];
 
   return (
     <div className="fade-in">
@@ -148,6 +150,8 @@ export default function Home({ onMovieClick }) {
           </div>
         </div>
       )}
+
+      <GenreScroller onNavigate={onNavigate} movies={moviePool} />
 
       <MovieCarousel title="Trending This Week" movies={data.trending.slice(5)} onMovieClick={onMovieClick} />
       <MovieCarousel title="Popular" movies={data.popular} onMovieClick={onMovieClick} />

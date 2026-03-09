@@ -8,6 +8,7 @@ import Home from './pages/Home.jsx';
 import MyList from './pages/MyList.jsx';
 import Search from './pages/Search.jsx';
 import Browse from './pages/Browse.jsx';
+import Genres from './pages/Genres.jsx';
 import Settings from './pages/Settings.jsx';
 
 export default function App() {
@@ -56,7 +57,8 @@ export default function App() {
     const handleSearchNav = (e) => navigate('search', { query: e.detail.query });
     const handleMoreNav = (e) => {
       const title = e.detail.title;
-      if (title === 'Popular' || title === 'Trending This Week') navigate('popular');
+      if (title === 'Trending This Week') navigate('trending');
+      else if (title === 'Popular') navigate('popular');
       else if (title === 'Top Rated' || title === 'Top Rated On IMDb') navigate('top_rated');
       else if (title === 'Now Playing') navigate('now_playing');
     };
@@ -75,12 +77,15 @@ export default function App() {
       case 'home': return <Home onMovieClick={(m) => setSelectedMovieId(m.id)} onNavigate={navigate} />;
       case 'mylist': return <MyList filter={pageProps.filter || 'all'} onMovieClick={(m) => setSelectedMovieId(m.id)} onNavigate={navigate} />;
       case 'search': return <Search query={pageProps.query || ''} onMovieClick={(m) => setSelectedMovieId(m.id)} />;
+      case 'trending':
       case 'popular':
       case 'top_rated':
       case 'now_playing':
         return <Browse category={currentPage} onMovieClick={(m) => setSelectedMovieId(m.id)} />;
       case 'genre':
         return <Browse category="genre" genreId={pageProps.genreId} genreName={pageProps.genreName} onMovieClick={(m) => setSelectedMovieId(m.id)} />;
+      case 'genres':
+        return <Genres onNavigate={navigate} />;
       case 'settings': return <Settings theme={theme} setTheme={setTheme} accentColor={accentColor} setAccentColor={setAccentColor} />;
       default: return <Home onMovieClick={(m) => setSelectedMovieId(m.id)} />;
     }

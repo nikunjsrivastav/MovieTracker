@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { getPopular, getTopRated, getNowPlaying, getMoviesByGenre, hasApiKey } from '../api/tmdb.js';
+import React, { useState, useEffect, useCallback } from 'react';
+import { getPopular, getTopRated, getNowPlaying, getTrending, getMoviesByGenre, hasApiKey } from '../api/tmdb.js';
 import { MovieGrid, SkeletonCards } from '../components/MovieCard.jsx';
 
 const PAGE_CONFIG = {
+  trending: { title: 'Trending This Week', fetcher: (page) => getTrending('week', page) },
   popular: { title: 'Popular Movies', fetcher: getPopular },
   top_rated: { title: 'Top Rated Movies', fetcher: getTopRated },
   now_playing: { title: 'Now Playing', fetcher: getNowPlaying },
@@ -19,9 +20,14 @@ export default function Browse({ category, genreId, genreName, onMovieClick }) {
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState('');
 
-  const config = category === 'genre' 
-    ? { title: `${genreName} Movies`, fetcher: (page) => getMoviesByGenre(genreId, page) }
-    : PAGE_CONFIG[category];
+  const title = category === 'genre' ? `${genreName} Movies` : PAGE_CONFIG[category]?.title;
+
+  const fetcher = useCallback((p) => {
+    if (category === 'genre') {
+      return getMoviesByGenre(genreId, p);
+    }
+    return PAGE_CONFIG[category]?.fetcher(p);
+  }, [category, genreId]);
 
   useEffect(() => {
     setMovies([]);
@@ -29,14 +35,14 @@ export default function Browse({ category, genreId, genreName, onMovieClick }) {
     setTotalPages(1);
     setError('');
     
-    if (!hasApiKey() || !config) {
+    if (!hasApiKey() || (category !== 'genre' && !PAGE_CONFIG[category])) {
       setLoading(false);
       return;
     }
 
     let active = true;
     setLoading(true);
-    config.fetcher(1)
+    fetcher(1)
       .then(data => {
         if (active) {
           setMovies(data.results || []);
@@ -52,13 +58,13 @@ export default function Browse({ category, genreId, genreName, onMovieClick }) {
       });
 
     return () => active = false;
-  }, [category, config]);
+  }, [category, genreId, fetcher]);
 
   const loadMore = async () => {
     if (loadingMore || page >= totalPages) return;
     setLoadingMore(true);
     try {
-      const data = await config.fetcher(page + 1);
+      const data = await fetcher(page + 1);
       setMovies(prev => [...prev, ...(data.results || [])]);
       setPage(page + 1);
     } catch (err) {
@@ -68,7 +74,7 @@ export default function Browse({ category, genreId, genreName, onMovieClick }) {
     }
   };
 
-  if (!config) return <div className="empty-state"><h3>Page not found</h3></div>;
+  if (category !== 'genre' && !PAGE_CONFIG[category]) return <div className="empty-state"><h3>Page not found</h3></div>;
 
   if (!hasApiKey()) {
     return (
@@ -92,7 +98,7 @@ export default function Browse({ category, genreId, genreName, onMovieClick }) {
 
   return (
     <div className="fade-in">
-      <h1 className="page-title" style={{ marginBottom: 'var(--space-xl)' }}>{config.title}</h1>
+      <h1 className="page-title" style={{ marginBottom: 'var(--space-xl)' }}>{title}</h1>
       
       {loading ? (
         <SkeletonCards count={18} />

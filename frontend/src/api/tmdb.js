@@ -45,8 +45,8 @@ export async function searchMovies(query, page = 1) {
   return fetchTMDB('/search/movie', { query, page });
 }
 
-export async function getTrending(timeWindow = 'week') {
-  return fetchTMDB(`/trending/movie/${timeWindow}`);
+export async function getTrending(timeWindow = 'week', page = 1) {
+  return fetchTMDB(`/trending/movie/${timeWindow}`, { page });
 }
 
 export async function getPopular(page = 1) {

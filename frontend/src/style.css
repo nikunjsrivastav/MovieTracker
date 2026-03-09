@@ -447,16 +447,19 @@ html[data-theme="light"] .btn-primary:hover {
 .movie-card .card-status-badge .badge-label {
   display: none;
   white-space: nowrap;
+  line-height: 1.2;
 }
 
 .movie-card:hover .card-status-badge {
-  max-width: 140px;
-  max-height: 40px;
+  max-width: 96px;
+  max-height: 48px;
   padding: 4px 8px;
+  align-items: flex-start;
 }
 
 .movie-card:hover .card-status-badge .badge-label {
   display: inline;
+  white-space: normal;
 }
 
 .badge-watching {
@@ -1242,7 +1245,7 @@ html[data-theme="light"] .modal-container {
   width: 36px;
   height: 36px;
   border-radius: var(--radius-full);
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--accent-primary);
   backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
@@ -1253,8 +1256,12 @@ html[data-theme="light"] .modal-container {
 }
 
 .modal-close:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--accent-primary-hover);
+  filter: brightness(1.1);
+  color: var(--accent-text, #fff);
+  border-color: var(--accent-primary);
   transform: scale(1.05);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-primary) 25%, transparent);
 }
 
 .modal-body {

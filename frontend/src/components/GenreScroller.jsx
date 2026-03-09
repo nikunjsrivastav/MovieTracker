@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { getGenres, hasApiKey, IMG_SIZES } from '../api/tmdb.js';
+import { useNavigate } from 'react-router-dom';
+import { getGenres, getFallbackGenreMovie, hasApiKey, IMG_SIZES } from '../api/tmdb.js';
 
-export default function GenreScroller({ onNavigate, movies = [] }) {
+export default function GenreScroller({ movies = [] }) {
+  const navigate = useNavigate();
   const [genres, setGenres] = useState([]);
+  const [genreBackdrops, setGenreBackdrops] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -27,26 +30,55 @@ export default function GenreScroller({ onNavigate, movies = [] }) {
     return () => active = false;
   }, []);
 
+
+  useEffect(() => {
+    if (genres.length === 0) return;
+
+    let active = true;
+    const initialBackdrops = {};
+    const usedMovieIds = new Set();
+    const missingGenreIds = [];
+
+    // Map the local pool of movies to genres
+    genres.forEach(genre => {
+      let repMovie = movies.find(m => m.genre_ids && m.genre_ids.includes(genre.id) && !usedMovieIds.has(m.id));
+      if (!repMovie) repMovie = movies.find(m => m.genre_ids && m.genre_ids.includes(genre.id));
+
+      if (repMovie) {
+        initialBackdrops[genre.id] = repMovie;
+        usedMovieIds.add(repMovie.id);
+      } else {
+        missingGenreIds.push(genre.id);
+      }
+    });
+
+    setGenreBackdrops(initialBackdrops);
+
+    // Fetch fallback movies for any empty genres
+    if (missingGenreIds.length > 0) {
+      Promise.all(missingGenreIds.map(async id => {
+        try {
+          const fallback = await getFallbackGenreMovie(id);
+          return { id, movie: fallback };
+        } catch (e) {
+          return { id, movie: null };
+        }
+      })).then(results => {
+        if (!active) return;
+        setGenreBackdrops(prev => {
+          const updated = { ...prev };
+          results.forEach(({ id, movie }) => {
+            if (movie) updated[id] = movie;
+          });
+          return updated;
+        });
+      });
+    }
+
+    return () => active = false;
+  }, [genres, movies]);
+
   if (loading || genres.length === 0) return null;
-
-  // Pre-calculate unique backdrops for each genre
-  const genreBackdrops = {};
-  const usedMovieIds = new Set();
-
-  genres.forEach(genre => {
-    // Try to find a movie that hasn't been used yet for a backdrop
-    let repMovie = movies.find(m => m.genre_ids && m.genre_ids.includes(genre.id) && !usedMovieIds.has(m.id));
-    
-    // If all movies for this genre are already used, fallback to any movie with this genre
-    if (!repMovie) {
-      repMovie = movies.find(m => m.genre_ids && m.genre_ids.includes(genre.id));
-    }
-
-    if (repMovie) {
-      genreBackdrops[genre.id] = repMovie;
-      usedMovieIds.add(repMovie.id);
-    }
-  });
 
   return (
     <div className="genre-scroller-container fade-in" style={{ marginBottom: 'var(--space-2xl)' }}>
@@ -96,7 +128,7 @@ export default function GenreScroller({ onNavigate, movies = [] }) {
                 e.currentTarget.style.boxShadow = 'var(--shadow-sm)';
                 e.currentTarget.querySelector('.genre-overlay').style.background = 'linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%)';
               }}
-              onClick={() => onNavigate('genre', { genreId: genre.id, genreName: genre.name })}
+              onClick={() => navigate(`/genre/${genre.id}/${encodeURIComponent(genre.name)}`)}
             >
               {bgImage ? (
                 <img 

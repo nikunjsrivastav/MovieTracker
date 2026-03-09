@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar.jsx';
 import Header from './components/Header.jsx';
 import MovieModal from './components/MovieModal.jsx';
@@ -12,8 +13,8 @@ import Genres from './pages/Genres.jsx';
 import Settings from './pages/Settings.jsx';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('home');
-  const [pageProps, setPageProps] = useState({});
+  const navigate = useNavigate();
+  const location = useLocation();
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem('app_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'));
@@ -39,11 +40,9 @@ export default function App() {
     localStorage.setItem('app_accent', accentColor);
   }, [accentColor]);
 
-  const navigate = (page, props = {}) => {
-    setCurrentPage(page);
-    setPageProps(props);
+  useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, [location.pathname]);
 
   useEffect(() => {
     // Check if bg.jpg exists (using a simple image load)
@@ -54,13 +53,13 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const handleSearchNav = (e) => navigate('search', { query: e.detail.query });
+    const handleSearchNav = (e) => navigate(`/search?q=${encodeURIComponent(e.detail.query)}`);
     const handleMoreNav = (e) => {
       const title = e.detail.title;
-      if (title === 'Trending This Week') navigate('trending');
-      else if (title === 'Popular') navigate('popular');
-      else if (title === 'Top Rated' || title === 'Top Rated On IMDb') navigate('top_rated');
-      else if (title === 'Now Playing') navigate('now_playing');
+      if (title === 'Trending This Week') navigate('/browse/trending');
+      else if (title === 'Popular') navigate('/browse/popular');
+      else if (title === 'Top Rated' || title === 'Top Rated On IMDb') navigate('/browse/top_rated');
+      else if (title === 'Now Playing') navigate('/browse/now_playing');
     };
 
     document.addEventListener('navigate-search', handleSearchNav);
@@ -70,33 +69,11 @@ export default function App() {
       document.removeEventListener('navigate-search', handleSearchNav);
       document.removeEventListener('navigate-more', handleMoreNav);
     };
-  }, []);
-
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'home': return <Home onMovieClick={(m) => setSelectedMovieId(m.id)} onNavigate={navigate} />;
-      case 'mylist': return <MyList filter={pageProps.filter || 'all'} onMovieClick={(m) => setSelectedMovieId(m.id)} onNavigate={navigate} />;
-      case 'search': return <Search query={pageProps.query || ''} onMovieClick={(m) => setSelectedMovieId(m.id)} />;
-      case 'trending':
-      case 'popular':
-      case 'top_rated':
-      case 'now_playing':
-        return <Browse category={currentPage} onMovieClick={(m) => setSelectedMovieId(m.id)} />;
-      case 'genre':
-        return <Browse category="genre" genreId={pageProps.genreId} genreName={pageProps.genreName} onMovieClick={(m) => setSelectedMovieId(m.id)} />;
-      case 'genres':
-        return <Genres onNavigate={navigate} />;
-      case 'settings': return <Settings theme={theme} setTheme={setTheme} accentColor={accentColor} setAccentColor={setAccentColor} />;
-      default: return <Home onMovieClick={(m) => setSelectedMovieId(m.id)} />;
-    }
-  };
+  }, [navigate]);
 
   return (
     <div id="app" className={isSidebarCollapsed ? 'sidebar-collapsed' : ''}>
       <Sidebar
-        currentPage={currentPage}
-        currentFilter={pageProps.filter}
-        navigate={navigate}
         isCollapsed={isSidebarCollapsed}
         onToggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
@@ -106,7 +83,16 @@ export default function App() {
           onToggleSidebar={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
         />
         <div className="app-content">
-          {renderPage()}
+          <Routes>
+            <Route path="/" element={<Home onMovieClick={(m) => setSelectedMovieId(m.id)} />} />
+            <Route path="/mylist/:filter?" element={<MyList onMovieClick={(m) => setSelectedMovieId(m.id)} />} />
+            <Route path="/search" element={<Search onMovieClick={(m) => setSelectedMovieId(m.id)} />} />
+            <Route path="/browse/:category" element={<Browse onMovieClick={(m) => setSelectedMovieId(m.id)} />} />
+            <Route path="/genre/:id/:name" element={<Browse category="genre" onMovieClick={(m) => setSelectedMovieId(m.id)} />} />
+            <Route path="/genres" element={<Genres />} />
+            <Route path="/settings" element={<Settings theme={theme} setTheme={setTheme} accentColor={accentColor} setAccentColor={setAccentColor} />} />
+            <Route path="*" element={<Home onMovieClick={(m) => setSelectedMovieId(m.id)} />} />
+          </Routes>
         </div>
       </main>
 

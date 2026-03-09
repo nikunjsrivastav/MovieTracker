@@ -61,6 +61,15 @@ export async function getNowPlaying(page = 1) {
   return fetchTMDB('/movie/now_playing', { page });
 }
 
+export async function getFallbackGenreMovie(genreId) {
+  const data = await fetchTMDB('/discover/movie', {
+    with_genres: genreId,
+    sort_by: 'popularity.desc',
+    page: 1,
+  });
+  return data.results && data.results.length > 0 ? data.results[0] : null;
+}
+
 export async function getMovieDetails(id) {
   return fetchTMDB(`/movie/${id}`, { append_to_response: 'credits,videos' });
 }

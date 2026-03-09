@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { getGenres, getPopular, getTrending, hasApiKey, IMG_SIZES } from '../api/tmdb.js';
+import { useNavigate } from 'react-router-dom';
+import { getGenres, getPopular, getTrending, getFallbackGenreMovie, hasApiKey, IMG_SIZES } from '../api/tmdb.js';
 
 const EMPTY_ICON = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="64" height="64" fill="currentColor"><path d="M224,128a8,8,0,0,1-8,8H136v80a8,8,0,0,1-16,0V136H40a8,8,0,0,1,0-16h80V40a8,8,0,0,1,16,0v80h80A8,8,0,0,1,224,128Z"></path></svg>;
 
-export default function Genres({ onNavigate }) {
+export default function Genres() {
+  const navigate = useNavigate();
   const [genres, setGenres] = useState([]);
   const [movies, setMovies] = useState([]);
+  const [genreBackdrops, setGenreBackdrops] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -58,6 +61,53 @@ export default function Genres({ onNavigate }) {
     return () => active = false;
   }, []);
 
+  useEffect(() => {
+    if (genres.length === 0 || movies.length === 0) return;
+
+    let active = true;
+    const initialBackdrops = {};
+    const usedMovieIds = new Set();
+    const missingGenreIds = [];
+
+    // Map the local pool of movies to genres
+    genres.forEach(genre => {
+      let repMovie = movies.find(m => m.genre_ids && m.genre_ids.includes(genre.id) && !usedMovieIds.has(m.id));
+      if (!repMovie) repMovie = movies.find(m => m.genre_ids && m.genre_ids.includes(genre.id));
+
+      if (repMovie) {
+        initialBackdrops[genre.id] = repMovie;
+        usedMovieIds.add(repMovie.id);
+      } else {
+        missingGenreIds.push(genre.id);
+      }
+    });
+
+    setGenreBackdrops(initialBackdrops);
+
+    // Fetch fallback movies for any empty genres
+    if (missingGenreIds.length > 0) {
+      Promise.all(missingGenreIds.map(async id => {
+        try {
+          const fallback = await getFallbackGenreMovie(id);
+          return { id, movie: fallback };
+        } catch (e) {
+          return { id, movie: null };
+        }
+      })).then(results => {
+        if (!active) return;
+        setGenreBackdrops(prev => {
+          const updated = { ...prev };
+          results.forEach(({ id, movie }) => {
+            if (movie) updated[id] = movie;
+          });
+          return updated;
+        });
+      });
+    }
+
+    return () => active = false;
+  }, [genres, movies]);
+
   if (!hasApiKey()) {
     return (
       <div className="empty-state fade-in">
@@ -91,28 +141,6 @@ export default function Genres({ onNavigate }) {
     );
   }
 
-  // Pre-calculate unique backdrops for each genre
-  const genreBackdrops = {};
-  const usedMovieIds = new Set();
-
-  console.log(`Mapping genres with pool of ${movies.length} movies...`);
-
-  if (movies.length > 0) {
-    genres.forEach(genre => {
-      // Try to find a movie that hasn't been used yet for a backdrop
-      let repMovie = movies.find(m => m.genre_ids && m.genre_ids.includes(genre.id) && !usedMovieIds.has(m.id));
-      
-      // If all movies for this genre are already used, fallback to any movie with this genre
-      if (!repMovie) {
-        repMovie = movies.find(m => m.genre_ids && m.genre_ids.includes(genre.id));
-      }
-
-      if (repMovie) {
-        genreBackdrops[genre.id] = repMovie;
-        usedMovieIds.add(repMovie.id);
-      }
-    });
-  }
 
   return (
     <div className="fade-in">
@@ -128,7 +156,7 @@ export default function Genres({ onNavigate }) {
       >
         {genres.map(genre => {
           const repMovie = genreBackdrops[genre.id];
-          const bgImage = repMovie?.backdrop_path ? `${IMG_SIZES.backdrop_md}${repMovie.backdrop_path}` : null;
+          const bgImage = repMovie?.backdrop_path ? `${IMG_SIZES.backdrop_sm}${repMovie.backdrop_path}` : null;
 
           return (
             <div
@@ -157,7 +185,7 @@ export default function Genres({ onNavigate }) {
                 const img = e.currentTarget.querySelector('.genre-bg-img');
                 if (img) img.style.transform = 'scale(1)';
               }}
-              onClick={() => onNavigate('genre', { genreId: genre.id, genreName: genre.name })}
+              onClick={() => navigate(`/genre/${genre.id}/${encodeURIComponent(genre.name)}`)}
             >
               {bgImage ? (
                 <img 

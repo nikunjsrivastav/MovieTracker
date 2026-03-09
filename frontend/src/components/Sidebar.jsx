@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { useWatchlist } from '../store/watchlist.jsx';
 
 const ICONS = {
@@ -36,32 +37,30 @@ const BROWSE_ITEMS = [
   { id: 'now_playing', icon: ICONS.now_playing, label: 'Now Playing' },
 ];
 
-export default function Sidebar({ currentPage, currentFilter, navigate, isCollapsed, onToggleSidebar }) {
+export default function Sidebar({ isCollapsed, onToggleSidebar }) {
   const { getStats } = useWatchlist();
   const stats = getStats();
 
-  const handleNavClick = (page, filter) => {
-    navigate(page, filter ? { filter } : {});
+  const handleNavClick = () => {
     document.getElementById('sidebar')?.classList.remove('open');
     document.getElementById('mobile-overlay')?.classList.remove('active');
   };
 
-  const NavItem = ({ page, filter, icon, label, badge, customColor }) => {
-    const isActive = (currentPage === page && !filter) || 
-                     (currentPage === page && currentFilter === filter);
-
+  const NavItem = ({ to, icon, label, badge, customColor }) => {
     return (
-      <div 
-        className={`nav-item ${isActive ? 'active' : ''}`} 
-        onClick={() => handleNavClick(page, filter)}
+      <NavLink 
+        to={to}
+        className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+        onClick={handleNavClick}
         title={isCollapsed ? label : ''}
+        end={to === '/'}
       >
         <span className="nav-icon" style={customColor ? { color: customColor } : {}}>
           {icon}
         </span>
         {!isCollapsed && <span>{label}</span>}
         {!isCollapsed && badge > 0 && <span className="nav-badge">{badge}</span>}
-      </div>
+      </NavLink>
     );
   };
 
@@ -86,7 +85,7 @@ export default function Sidebar({ currentPage, currentFilter, navigate, isCollap
         {MENU_ITEMS.map(item => (
           <NavItem 
             key={item.id} 
-            page={item.id} 
+            to={item.id === 'home' ? '/' : `/${item.id}`} 
             icon={item.icon} 
             label={item.label} 
             badge={item.id === 'mylist' ? stats.total : 0} 
@@ -96,16 +95,22 @@ export default function Sidebar({ currentPage, currentFilter, navigate, isCollap
 
         {!isCollapsed && <div className="sidebar-section-title" style={{ marginTop: 'var(--space-md)' }}>Browse</div>}
         {BROWSE_ITEMS.map(item => (
-          <NavItem key={item.id} page={item.id} icon={item.icon} label={item.label} customColor="" />
+          <NavItem 
+            key={item.id} 
+            to={item.id === 'genres' ? '/genres' : `/browse/${item.id}`} 
+            icon={item.icon} 
+            label={item.label} 
+            customColor="" 
+          />
         ))}
 
         {!isCollapsed && <div className="sidebar-section-title" style={{ marginTop: 'var(--space-md)' }}>Tracking</div>}
-        <NavItem page="mylist" filter="watching" icon={ICONS.watching} label="Watching" badge={stats.watching} customColor="#0A84FF" />
-        <NavItem page="mylist" filter="completed" icon={ICONS.completed} label="Completed" badge={stats.completed} customColor="#30D158" />
-        <NavItem page="mylist" filter="plan_to_watch" icon={ICONS.plan_to_watch} label="Plan to Watch" badge={stats.plan_to_watch} customColor="#FF9F0A" />
-        <NavItem page="mylist" filter="on_hold" icon={ICONS.on_hold} label="On Hold" badge={stats.on_hold} customColor="#FFD60A" />
-        <NavItem page="mylist" filter="dropped" icon={ICONS.dropped} label="Dropped" badge={stats.dropped} customColor="#FF453A" />
-        <NavItem page="mylist" filter="favourites" icon={ICONS.favourites} label="Favourites" badge={stats.favourites} customColor="#BF5AF2" />
+        <NavItem to="/mylist/watching" icon={ICONS.watching} label="Watching" badge={stats.watching} customColor="#0A84FF" />
+        <NavItem to="/mylist/completed" icon={ICONS.completed} label="Completed" badge={stats.completed} customColor="#30D158" />
+        <NavItem to="/mylist/plan_to_watch" icon={ICONS.plan_to_watch} label="Plan to Watch" badge={stats.plan_to_watch} customColor="#FF9F0A" />
+        <NavItem to="/mylist/on_hold" icon={ICONS.on_hold} label="On Hold" badge={stats.on_hold} customColor="#FFD60A" />
+        <NavItem to="/mylist/dropped" icon={ICONS.dropped} label="Dropped" badge={stats.dropped} customColor="#FF453A" />
+        <NavItem to="/mylist/favourites" icon={ICONS.favourites} label="Favourites" badge={stats.favourites} customColor="#BF5AF2" />
       </nav>
     </aside>
   );

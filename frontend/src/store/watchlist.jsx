@@ -3,7 +3,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const WatchlistContext = createContext();
 
 export function WatchlistProvider({ children }) {
-  const STORAGE_KEY = 'movietracky_watchlist';
+  const STORAGE_KEY = 'movietracker_watchlist';
   const [watchlist, setWatchlist] = useState({});
 
   useEffect(() => {

@@ -51,7 +51,7 @@ export default function Settings({ theme, setTheme, accentColor, setAccentColor 
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'movietracky_watchlist.json';
+    a.download = 'movietracker_watchlist.json';
     a.click();
     URL.revokeObjectURL(url);
     showToast('Backup exported successfully', 'success');

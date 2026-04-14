@@ -3,6 +3,8 @@ import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import Sidebar from './components/Sidebar.jsx';
 import Header from './components/Header.jsx';
 import MovieModal from './components/MovieModal.jsx';
+import AuthModal from './components/AuthModal.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 
 // Pages
 import Home from './pages/Home.jsx';
@@ -11,6 +13,10 @@ import Search from './pages/Search.jsx';
 import Browse from './pages/Browse.jsx';
 import Genres from './pages/Genres.jsx';
 import Settings from './pages/Settings.jsx';
+import Profile from './pages/account/Profile.jsx';
+import EditProfile from './pages/account/EditProfile.jsx';
+import ChangePassword from './pages/account/ChangePassword.jsx';
+import DeleteAccount from './pages/account/DeleteAccount.jsx';
 
 export default function App() {
   const navigate = useNavigate();
@@ -87,6 +93,10 @@ export default function App() {
             <Route path="/genre/:id/:name" element={<Browse category="genre" onMovieClick={(m) => setSelectedMovieId(m.id)} />} />
             <Route path="/genres" element={<Genres />} />
             <Route path="/settings" element={<Settings accentColor={accentColor} setAccentColor={setAccentColor} />} />
+            <Route path="/account/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/account/edit" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
+            <Route path="/account/password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
+            <Route path="/account/delete" element={<ProtectedRoute><DeleteAccount /></ProtectedRoute>} />
             <Route path="*" element={<Home onMovieClick={(m) => setSelectedMovieId(m.id)} />} />
           </Routes>
         </div>
@@ -98,6 +108,8 @@ export default function App() {
           onClose={() => setSelectedMovieId(null)}
         />
       )}
+
+      <AuthModal />
     </div>
   );
 }

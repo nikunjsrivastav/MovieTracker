@@ -1,23 +1,45 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
+
+import { useAuth } from './auth.jsx';
 
 const WatchlistContext = createContext();
+const GUEST_STORAGE_KEY = 'movietracker_watchlist_guest';
+
+function getStorageKey(user) {
+  return user?.id ? `movietracker_watchlist_user_${user.id}` : GUEST_STORAGE_KEY;
+}
 
 export function WatchlistProvider({ children }) {
-  const STORAGE_KEY = 'movietracker_watchlist';
+  const { user, isAuthenticated, isAuthReady } = useAuth();
   const [watchlist, setWatchlist] = useState({});
+  const storageKey = useMemo(() => getStorageKey(isAuthenticated ? user : null), [isAuthenticated, user]);
+  const previousAuthStateRef = React.useRef(false);
 
   useEffect(() => {
+    if (!isAuthReady) {
+      return;
+    }
+
+    if (previousAuthStateRef.current && !isAuthenticated) {
+      localStorage.removeItem(GUEST_STORAGE_KEY);
+      setWatchlist({});
+      previousAuthStateRef.current = isAuthenticated;
+      return;
+    }
+
     try {
-      const data = localStorage.getItem(STORAGE_KEY);
-      if (data) setWatchlist(JSON.parse(data));
+      const data = localStorage.getItem(storageKey);
+      setWatchlist(data ? JSON.parse(data) : {});
     } catch (e) {
       console.error('Error loading watchlist', e);
+      setWatchlist({});
     }
-  }, []);
+    previousAuthStateRef.current = isAuthenticated;
+  }, [isAuthReady, storageKey]);
 
   const save = (newList) => {
     setWatchlist(newList);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(newList));
+    localStorage.setItem(storageKey, JSON.stringify(newList));
   };
 
   const addMovie = (movie, status = 'plan_to_watch', rating = 0) => {
@@ -74,7 +96,7 @@ export function WatchlistProvider({ children }) {
   const importData = (jsonString) => {
     try {
       const data = JSON.parse(jsonString);
-      if (typeof data === 'object') {
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
         save(data);
         return true;
       }
@@ -87,6 +109,14 @@ export function WatchlistProvider({ children }) {
   const clearAll = () => {
     save({});
   };
+
+  const storageScopeLabel = isAuthenticated
+    ? `Signed in as ${user?.email}`
+    : 'Signed out / guest mode';
+
+  const watchlistPersistenceNote = isAuthenticated
+    ? 'Your watchlist is linked to this signed-in account on this browser. Logging out clears it from the visible UI, and it returns when this same account signs back in here.'
+    : 'You are in guest mode. Signed-out watchlist data is not shared with signed-in accounts.';
 
   return (
     <WatchlistContext.Provider value={{
@@ -102,7 +132,10 @@ export function WatchlistProvider({ children }) {
       getStats,
       exportData,
       importData,
-      clearAll
+      clearAll,
+      storageKey,
+      storageScopeLabel,
+      watchlistPersistenceNote,
     }}>
       {children}
     </WatchlistContext.Provider>

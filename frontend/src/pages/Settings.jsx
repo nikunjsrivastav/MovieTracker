@@ -1,5 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+
 import { useToast } from '../components/Toast.jsx';
+import { useAuth } from '../store/auth.jsx';
 import { useWatchlist } from '../store/watchlist.jsx';
 
 const EXPORT_ICON = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="16" height="16" fill="currentColor"><path d="M222.8,118.8l-88,88a8,8,0,0,1-11.32,0l-88-88A8,8,0,0,1,41.2,107.5L120,186.3V24A8,8,0,0,1,136,24V186.3l78.8-78.8a8,8,0,0,1,11.32,11.32Z"></path><path d="M216,224H40a8,8,0,0,1,0-16H216a8,8,0,0,1,0,16Z"></path></svg>;
@@ -19,7 +22,14 @@ const ACCENT_COLORS = [
 
 export default function Settings({ accentColor, setAccentColor }) {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('tmdb_api_key') || '');
-  const { exportData, importData, clearAll } = useWatchlist();
+  const {
+    exportData,
+    importData,
+    clearAll,
+    storageScopeLabel,
+    watchlistPersistenceNote,
+  } = useWatchlist();
+  const { user, isAuthenticated, logout } = useAuth();
   const { showToast } = useToast();
   const fileInputRef = useRef(null);
 
@@ -31,7 +41,7 @@ export default function Settings({ accentColor, setAccentColor }) {
       localStorage.setItem('tmdb_api_key', trimmed);
       setApiKey(trimmed);
       showToast('API key saved securely', 'success');
-      setTimeout(() => location.reload(), 500); // Reload to trigger API refetch across the app cleanly
+      setTimeout(() => location.reload(), 500);
     } else {
       showToast('Please enter a valid API key', 'error');
     }
@@ -48,10 +58,10 @@ export default function Settings({ accentColor, setAccentColor }) {
     const data = exportData();
     const blob = new Blob([data], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'movietracker_watchlist.json';
-    a.click();
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'movietracker_watchlist.json';
+    link.click();
     URL.revokeObjectURL(url);
     showToast('Backup exported successfully', 'success');
   };
@@ -60,13 +70,13 @@ export default function Settings({ accentColor, setAccentColor }) {
     fileInputRef.current?.click();
   };
 
-  const handleImportFile = (e) => {
-    const file = e.target.files?.[0];
+  const handleImportFile = (event) => {
+    const file = event.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (ev) => {
-      const success = importData(ev.target.result);
+    reader.onload = (loadEvent) => {
+      const success = importData(loadEvent.target.result);
       if (success) {
         showToast('Data imported successfully', 'success');
       } else {
@@ -74,19 +84,70 @@ export default function Settings({ accentColor, setAccentColor }) {
       }
     };
     reader.readAsText(file);
-    e.target.value = ''; // Reset input
+    event.target.value = '';
   };
 
   const handleClearData = () => {
-    if (confirm('Are you sure? This will delete all your watchlist data permanently.')) {
+    if (confirm('Are you sure? This will delete the current watchlist for this browser scope.')) {
       clearAll();
-      showToast('All data cleared', 'info');
+      showToast('Current watchlist cleared', 'info');
     }
   };
 
   return (
     <div className="settings-section fade-in">
       <h1 className="page-title" style={{ marginBottom: 'var(--space-xl)' }}>Settings</h1>
+
+      {isAuthenticated && (
+        <div className="settings-group">
+          <label>Account</label>
+          <p>Manage the signed-in account and the watchlist data linked to it on this browser.</p>
+
+          <div className="account-detail-grid">
+            <div>
+              <span className="account-detail-label">Signed in as</span>
+              <strong>{user?.email}</strong>
+            </div>
+            <div>
+              <span className="account-detail-label">Profile name</span>
+              <strong>{user?.name || 'Not set yet'}</strong>
+            </div>
+            <div>
+              <span className="account-detail-label">Watchlist scope</span>
+              <strong>{storageScopeLabel}</strong>
+            </div>
+            <div>
+              <span className="account-detail-label">Data note</span>
+              <strong>{watchlistPersistenceNote}</strong>
+            </div>
+          </div>
+
+          <div style={{ marginTop: 'var(--space-md)', display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
+            <Link to="/account/profile" className="btn btn-ghost btn-sm">View profile</Link>
+            <Link to="/account/edit" className="btn btn-ghost btn-sm">Edit profile</Link>
+            <Link to="/account/password" className="btn btn-ghost btn-sm">Change password</Link>
+            <Link to="/account/delete" className="btn btn-danger btn-sm">Delete account</Link>
+            <button className="btn btn-ghost btn-sm" onClick={() => logout({ redirectTo: '/' })}>Logout</button>
+          </div>
+        </div>
+      )}
+
+      {!isAuthenticated && (
+        <div className="settings-group">
+          <label>Account</label>
+          <p>You are currently signed out. Sign in to keep your watchlist separated by account on this browser.</p>
+          <div className="account-detail-grid">
+            <div>
+              <span className="account-detail-label">Current mode</span>
+              <strong>{storageScopeLabel}</strong>
+            </div>
+            <div>
+              <span className="account-detail-label">Data note</span>
+              <strong>{watchlistPersistenceNote}</strong>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="settings-group">
         <label htmlFor="api-key-input">TMDB API Key</label>
@@ -99,9 +160,9 @@ export default function Settings({ accentColor, setAccentColor }) {
           id="api-key-input"
           placeholder="Paste your API key here..."
           value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
+          onChange={(event) => setApiKey(event.target.value)}
         />
-        <div style={{ marginTop: 'var(--space-md)', display: 'flex', gap: 'var(--space-sm)', alignItems: 'center' }}>
+        <div style={{ marginTop: 'var(--space-md)', display: 'flex', gap: 'var(--space-sm)', alignItems: 'center', flexWrap: 'wrap' }}>
           <button className="btn btn-primary btn-sm" onClick={handleSaveKey}>Save Key</button>
           {envKey && !apiKey && <span style={{ fontSize: 'var(--font-xs)', color: 'var(--text-muted)', fontWeight: 600 }}>Using key from .env</span>}
           {apiKey && <button className="btn btn-ghost btn-sm" onClick={handleClearKey}>Clear Option</button>}
@@ -110,7 +171,7 @@ export default function Settings({ accentColor, setAccentColor }) {
 
       <div className="settings-group">
         <label>Data Management</label>
-        <p>Export your watchlist as JSON, or import a previously exported file. Your data remains strictly on your device.</p>
+        <p>Export or import the watchlist currently active for this browser scope. {watchlistPersistenceNote}</p>
         <div style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
           <button className="btn btn-ghost btn-sm" onClick={handleExport}>
             {EXPORT_ICON} Export Backup
@@ -132,33 +193,33 @@ export default function Settings({ accentColor, setAccentColor }) {
         <label>Accent Color</label>
         <p>Choose a highlight color for buttons, links, and interactive elements.</p>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: 'var(--space-sm)' }}>
-          {ACCENT_COLORS.map(c => {
-            const isLight = c.hex === '#FFFFFF' || c.hex === '#64D2FF';
-            const isDark = c.hex === '#1C1C1E';
+          {ACCENT_COLORS.map((color) => {
+            const isLight = color.hex === '#FFFFFF' || color.hex === '#64D2FF';
+            const isDark = color.hex === '#1C1C1E';
             return (
               <div
-                key={c.hex}
-                onClick={() => setAccentColor(c.hex)}
-                title={c.name}
+                key={color.hex}
+                onClick={() => setAccentColor(color.hex)}
+                title={color.name}
                 style={{
                   width: '36px',
                   height: '36px',
                   borderRadius: '50%',
-                  background: c.hex,
+                  background: color.hex,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   border: isLight ? '1.5px solid rgba(0,0,0,0.15)' : isDark ? '1.5px solid rgba(255,255,255,0.2)' : 'none',
-                  boxShadow: accentColor === c.hex
-                    ? `0 0 0 2px var(--glass-bg-base), 0 0 0 4px ${isLight ? 'rgba(0,0,0,0.3)' : c.hex}`
+                  boxShadow: accentColor === color.hex
+                    ? `0 0 0 2px var(--glass-bg-base), 0 0 0 4px ${isLight ? 'rgba(0,0,0,0.3)' : color.hex}`
                     : '0 2px 8px rgba(0,0,0,0.2)',
-                  opacity: accentColor === c.hex ? 1 : 0.55,
+                  opacity: accentColor === color.hex ? 1 : 0.55,
                   transition: 'all 200ms ease',
-                  transform: accentColor === c.hex ? 'scale(1.15)' : 'scale(1)',
+                  transform: accentColor === color.hex ? 'scale(1.15)' : 'scale(1)',
                 }}
               >
-                {accentColor === c.hex && (
+                {accentColor === color.hex && (
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke={isLight ? '#000' : '#fff'} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
@@ -171,8 +232,8 @@ export default function Settings({ accentColor, setAccentColor }) {
 
       <div className="settings-group">
         <label style={{ color: 'var(--accent-danger)' }}>Danger Zone</label>
-        <p>Clear all watchlist data and preferences. This action cannot be reversed.</p>
-        <button className="btn btn-danger btn-sm" onClick={handleClearData}>Delete All Data</button>
+        <p>Clear the currently active watchlist from this browser. If you are signed in, this only clears the active account-scoped watchlist on this device.</p>
+        <button className="btn btn-danger btn-sm" onClick={handleClearData}>Clear Current Watchlist</button>
       </div>
     </div>
   );

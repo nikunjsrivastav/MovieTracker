@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useWatchlist } from '../store/watchlist.jsx';
+import { useAuth } from '../store/auth.jsx';
 
 const ICONS = {
   home: <svg className="ico" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
@@ -18,6 +19,7 @@ const ICONS = {
   on_hold: <svg className="ico" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256"><path d="M112,64V192a8,8,0,0,1-16,0V64a8,8,0,0,1,16,0Zm48-8a8,8,0,0,0-8,8V192a8,8,0,0,0,16,0V64A8,8,0,0,0,160,56Z" fill="currentColor"></path></svg>,
   dropped: <svg className="ico" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256"><path d="M216,48H176V40a24,24,0,0,0-24-24H104A24,24,0,0,0,80,40v8H40a8,8,0,0,0,0,16h8V208a16,16,0,0,0,16,16H192a16,16,0,0,0,16-16V64h8a8,8,0,0,0,0-16ZM96,40a8,8,0,0,1,8-8h48a8,8,0,0,1,8,8v8H96Zm96,168H64V64H192ZM112,104v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Zm48,0v64a8,8,0,0,1-16,0V104a8,8,0,0,1,16,0Z" fill="currentColor"></path></svg>,
   favourites: <svg className="ico" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256"><path d="M240,94c0,70-103.79,126.66-108.21,129a8,8,0,0,1-7.58,0C119.79,220.66,16,164,16,94A62.07,62.07,0,0,1,78,32c22.59,0,41.94,17.31,50,32,8.06-14.69,27.41-32,50-32A62.07,62.07,0,0,1,240,94Z" fill="currentColor"></path></svg>,
+  account: <svg className="ico" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256"><path d="M128,24a56,56,0,1,0,56,56A56.06,56.06,0,0,0,128,24Zm0,96a40,40,0,1,1,40-40A40,40,0,0,1,128,120Zm0,24c-44.11,0-80,26.91-80,60a8,8,0,0,0,16,0c0-23.52,29.91-44,64-44s64,20.48,64,44a8,8,0,0,0,16,0C208,170.91,172.11,144,128,144Z" fill="currentColor"></path></svg>,
   logo: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/></svg>,
   collapse: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>,
   expand: <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -26,6 +28,7 @@ const ICONS = {
 const MENU_ITEMS = [
   { id: 'home', icon: ICONS.home, label: 'Home' },
   { id: 'mylist', icon: ICONS.mylist, label: 'My List' },
+  { id: 'account', icon: ICONS.account, label: 'Account' },
   { id: 'settings', icon: ICONS.settings, label: 'Settings' },
 ];
 
@@ -37,13 +40,30 @@ const BROWSE_ITEMS = [
   { id: 'now_playing', icon: ICONS.now_playing, label: 'Now Playing' },
 ];
 
+const ACCOUNT_ITEMS = [
+  { id: 'profile', label: 'View Profile', to: '/account/profile' },
+  { id: 'edit', label: 'Edit Profile', to: '/account/edit' },
+  { id: 'password', label: 'Change Password', to: '/account/password' },
+  { id: 'delete', label: 'Delete Account', to: '/account/delete' },
+];
+
 export default function Sidebar({ isCollapsed, onToggleSidebar }) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { isAuthenticated, openAuthModal, logout } = useAuth();
   const { getStats } = useWatchlist();
   const stats = getStats();
-  
+  const isAccountRoute = location.pathname.startsWith('/account');
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
+  const [isAccountOpen, setIsAccountOpen] = useState(isAccountRoute);
   const navRef = useRef(null);
+
+  useEffect(() => {
+    if (isAccountRoute) {
+      setIsAccountOpen(true);
+    }
+  }, [isAccountRoute]);
 
   const checkScroll = () => {
     if (navRef.current) {
@@ -101,16 +121,81 @@ export default function Sidebar({ isCollapsed, onToggleSidebar }) {
       <nav className="sidebar-nav" ref={navRef} onScroll={checkScroll}>
         <div className="sidebar-group">
           {!isCollapsed && <div className="sidebar-section-title">Menu</div>}
-          {MENU_ITEMS.map(item => (
-            <NavItem 
-              key={item.id} 
-              to={item.id === 'home' ? '/' : `/${item.id}`} 
-              icon={item.icon} 
-              label={item.label} 
-              badge={item.id === 'mylist' ? stats.total : 0} 
-              customColor=""
-            />
-          ))}
+          {MENU_ITEMS.map(item => {
+            if (item.id === 'account') {
+              return (
+                <div key={item.id}>
+                  <button
+                    type="button"
+                    className={`nav-item nav-item-button ${isAccountOpen || isAccountRoute ? 'active' : ''}`}
+                    onClick={() => {
+                      if (!isAuthenticated) {
+                        openAuthModal('login', { redirectTo: '/account/profile' });
+                        return;
+                      }
+                      if (isCollapsed) {
+                        navigate('/account/profile');
+                        return;
+                      }
+                      setIsAccountOpen((current) => !current);
+                    }}
+                    title={isCollapsed ? 'Account' : ''}
+                  >
+                    <span className="nav-icon">{ICONS.account}</span>
+                    {!isCollapsed && <span>Account</span>}
+                  </button>
+
+                  {!isCollapsed && isAccountOpen && (
+                    <div className="sidebar-subnav">
+                      {isAuthenticated ? (
+                        <>
+                          {ACCOUNT_ITEMS.map((accountItem) => (
+                            <NavLink
+                              key={accountItem.id}
+                              to={accountItem.to}
+                              className={({ isActive }) => `sidebar-subnav-item ${isActive ? 'active' : ''}`}
+                              onClick={handleNavClick}
+                            >
+                              {accountItem.label}
+                            </NavLink>
+                          ))}
+                          <button
+                            type="button"
+                            className="sidebar-subnav-item sidebar-subnav-logout"
+                            onClick={() => {
+                              handleNavClick();
+                              logout({ redirectTo: '/' });
+                            }}
+                          >
+                            Logout
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          type="button"
+                          className="sidebar-subnav-item sidebar-subnav-cta"
+                          onClick={() => openAuthModal('login', { redirectTo: '/account/profile' })}
+                        >
+                          Login to manage your account
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            return (
+              <NavItem
+                key={item.id}
+                to={item.id === 'home' ? '/' : `/${item.id}`}
+                icon={item.icon}
+                label={item.label}
+                badge={item.id === 'mylist' ? stats.total : 0}
+                customColor=""
+              />
+            );
+          })}
         </div>
 
         <div className="sidebar-group">

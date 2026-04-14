@@ -17,13 +17,9 @@ export default function App() {
   const location = useLocation();
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [theme, setTheme] = useState(() => localStorage.getItem('app_theme') || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'));
   const [accentColor, setAccentColor] = useState(() => localStorage.getItem('app_accent') || '#0A84FF');
 
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('app_theme', theme);
-  }, [theme]);
+
 
   useEffect(() => {
     document.documentElement.style.setProperty('--accent-primary', accentColor);
@@ -90,7 +86,7 @@ export default function App() {
             <Route path="/browse/:category" element={<Browse onMovieClick={(m) => setSelectedMovieId(m.id)} />} />
             <Route path="/genre/:id/:name" element={<Browse category="genre" onMovieClick={(m) => setSelectedMovieId(m.id)} />} />
             <Route path="/genres" element={<Genres />} />
-            <Route path="/settings" element={<Settings theme={theme} setTheme={setTheme} accentColor={accentColor} setAccentColor={setAccentColor} />} />
+            <Route path="/settings" element={<Settings accentColor={accentColor} setAccentColor={setAccentColor} />} />
             <Route path="*" element={<Home onMovieClick={(m) => setSelectedMovieId(m.id)} />} />
           </Routes>
         </div>

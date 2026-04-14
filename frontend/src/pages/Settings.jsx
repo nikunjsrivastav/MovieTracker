@@ -15,10 +15,9 @@ const ACCENT_COLORS = [
   { name: 'Teal', hex: '#64D2FF' },
   { name: 'Indigo', hex: '#5E5CE6' },
   { name: 'White', hex: '#FFFFFF' },
-  { name: 'Black', hex: '#1C1C1E' },
 ];
 
-export default function Settings({ theme, setTheme, accentColor, setAccentColor }) {
+export default function Settings({ accentColor, setAccentColor }) {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('tmdb_api_key') || '');
   const { exportData, importData, clearAll } = useWatchlist();
   const { showToast } = useToast();
@@ -130,24 +129,7 @@ export default function Settings({ theme, setTheme, accentColor, setAccentColor 
       </div>
 
       <div className="settings-group">
-        <label>Appearance</label>
-        <p>Switch between the premium Dark Glass aesthetic and the clean Light Glass aesthetic.</p>
-        <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
-          <button
-            className={`btn ${theme === 'light' ? 'btn-primary' : 'btn-ghost'} btn-sm`}
-            onClick={() => setTheme('light')}
-          >
-            Light Mode
-          </button>
-          <button
-            className={`btn ${theme === 'dark' ? 'btn-primary' : 'btn-ghost'} btn-sm`}
-            onClick={() => setTheme('dark')}
-          >
-            Dark Mode
-          </button>
-        </div>
-
-        <label style={{ marginTop: 'var(--space-lg)' }}>Accent Color</label>
+        <label>Accent Color</label>
         <p>Choose a highlight color for buttons, links, and interactive elements.</p>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: 'var(--space-sm)' }}>
           {ACCENT_COLORS.map(c => {

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useWatchlist } from '../store/watchlist.jsx';
 import { MovieGrid } from '../components/MovieCard.jsx';
 
@@ -14,7 +15,9 @@ const STATUS_LABELS = {
 
 const EMPTY_ICON = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" width="64" height="64"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,160H40V56H216V200ZM176,88a16,16,0,0,1-16,16H96a16,16,0,0,1,0-32h64A16,16,0,0,1,176,88Zm0,48a16,16,0,0,1-16,16H96a16,16,0,0,1,0-32h64A16,16,0,0,1,176,136Zm-32,48a16,16,0,0,1-16,16H96a16,16,0,0,1,0-32h32A16,16,0,0,1,144,184Z"></path></svg>;
 
-export default function MyList({ filter = 'all', onMovieClick, onNavigate }) {
+export default function MyList({ onMovieClick }) {
+  const { filter = 'all' } = useParams();
+  const navigate = useNavigate();
   const { getStats, getByStatus, getAll } = useWatchlist();
   
   const stats = getStats();
@@ -72,7 +75,7 @@ export default function MyList({ filter = 'all', onMovieClick, onNavigate }) {
           <div 
             key={key} 
             className={`tab-item ${filter === key ? 'active' : ''}`}
-            onClick={() => onNavigate('mylist', { filter: key })}
+            onClick={() => navigate(key === 'all' ? '/mylist' : `/mylist/${key}`)}
           >
             {label}
           </div>

@@ -28,8 +28,7 @@ const ICONS = {
 const MENU_ITEMS = [
   { id: 'home', icon: ICONS.home, label: 'Home' },
   { id: 'mylist', icon: ICONS.mylist, label: 'My List' },
-  { id: 'account', icon: ICONS.account, label: 'Account' },
-  { id: 'settings', icon: ICONS.settings, label: 'Settings' },
+  { id: 'settings', icon: ICONS.settings, label: 'User Settings' },
 ];
 
 const BROWSE_ITEMS = [
@@ -48,22 +47,11 @@ const ACCOUNT_ITEMS = [
 ];
 
 export default function Sidebar({ isCollapsed, onToggleSidebar }) {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { isAuthenticated, openAuthModal, logout } = useAuth();
   const { getStats } = useWatchlist();
   const stats = getStats();
-  const isAccountRoute = location.pathname.startsWith('/account');
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAtBottom, setIsAtBottom] = useState(true);
-  const [isAccountOpen, setIsAccountOpen] = useState(isAccountRoute);
   const navRef = useRef(null);
-
-  useEffect(() => {
-    if (isAccountRoute) {
-      setIsAccountOpen(true);
-    }
-  }, [isAccountRoute]);
 
   const checkScroll = () => {
     if (navRef.current) {
@@ -122,68 +110,6 @@ export default function Sidebar({ isCollapsed, onToggleSidebar }) {
         <div className="sidebar-group">
           {!isCollapsed && <div className="sidebar-section-title">Menu</div>}
           {MENU_ITEMS.map(item => {
-            if (item.id === 'account') {
-              return (
-                <div key={item.id}>
-                  <button
-                    type="button"
-                    className={`nav-item nav-item-button ${isAccountOpen || isAccountRoute ? 'active' : ''}`}
-                    onClick={() => {
-                      if (!isAuthenticated) {
-                        openAuthModal('login', { redirectTo: '/account/profile' });
-                        return;
-                      }
-                      if (isCollapsed) {
-                        navigate('/account/profile');
-                        return;
-                      }
-                      setIsAccountOpen((current) => !current);
-                    }}
-                    title={isCollapsed ? 'Account' : ''}
-                  >
-                    <span className="nav-icon">{ICONS.account}</span>
-                    {!isCollapsed && <span>Account</span>}
-                  </button>
-
-                  {!isCollapsed && isAccountOpen && (
-                    <div className="sidebar-subnav">
-                      {isAuthenticated ? (
-                        <>
-                          {ACCOUNT_ITEMS.map((accountItem) => (
-                            <NavLink
-                              key={accountItem.id}
-                              to={accountItem.to}
-                              className={({ isActive }) => `sidebar-subnav-item ${isActive ? 'active' : ''}`}
-                              onClick={handleNavClick}
-                            >
-                              {accountItem.label}
-                            </NavLink>
-                          ))}
-                          <button
-                            type="button"
-                            className="sidebar-subnav-item sidebar-subnav-logout"
-                            onClick={() => {
-                              handleNavClick();
-                              logout({ redirectTo: '/' });
-                            }}
-                          >
-                            Logout
-                          </button>
-                        </>
-                      ) : (
-                        <button
-                          type="button"
-                          className="sidebar-subnav-item sidebar-subnav-cta"
-                          onClick={() => openAuthModal('login', { redirectTo: '/account/profile' })}
-                        >
-                          Login to manage your account
-                        </button>
-                      )}
-                    </div>
-                  )}
-                </div>
-              );
-            }
 
             return (
               <NavItem

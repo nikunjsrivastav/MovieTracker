@@ -8,7 +8,6 @@ const SEARCH_ICON = <svg className="search-icon" xmlns="http://www.w3.org/2000/s
 const HAMBURGER_ICON = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="20" height="20"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z" fill="currentColor"></path></svg>;
 
 const PROFILE_ACTIONS = [
-  { label: 'View profile', to: '/account/profile' },
   { label: 'Edit profile', to: '/account/edit' },
   { label: 'Change password', to: '/account/password' },
   { label: 'Settings', to: '/settings' },

@@ -13,7 +13,6 @@ import Search from './pages/Search.jsx';
 import Browse from './pages/Browse.jsx';
 import Genres from './pages/Genres.jsx';
 import Settings from './pages/Settings.jsx';
-import Profile from './pages/account/Profile.jsx';
 import EditProfile from './pages/account/EditProfile.jsx';
 import ChangePassword from './pages/account/ChangePassword.jsx';
 import DeleteAccount from './pages/account/DeleteAccount.jsx';
@@ -24,6 +23,17 @@ export default function App() {
   const [selectedMovieId, setSelectedMovieId] = useState(null);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [accentColor, setAccentColor] = useState(() => localStorage.getItem('app_accent') || '#0A84FF');
+  const [borderRadius, setBorderRadius] = useState(() => {
+    const stored = localStorage.getItem('app_radius');
+    if (!stored) return 1;
+    if (stored === 'sharp') return 0;
+    if (stored === 'sm') return 0.5;
+    if (stored === 'default') return 1;
+    if (stored === 'lg') return 1.5;
+    if (stored === 'xl') return 2;
+    const parsed = parseFloat(stored);
+    return isNaN(parsed) ? 1 : parsed;
+  });
 
 
 
@@ -41,6 +51,18 @@ export default function App() {
 
     localStorage.setItem('app_accent', accentColor);
   }, [accentColor]);
+
+  useEffect(() => {
+    const scale = Number(borderRadius);
+    document.documentElement.style.setProperty('--radius-sm', `${8 * scale}px`);
+    document.documentElement.style.setProperty('--radius-md', `${12 * scale}px`);
+    document.documentElement.style.setProperty('--radius-lg', `${18 * scale}px`);
+    document.documentElement.style.setProperty('--radius-xl', `${24 * scale}px`);
+    document.documentElement.style.setProperty('--radius-2xl', `${32 * scale}px`);
+    document.documentElement.style.setProperty('--radius-full', `${32 * scale}px`);
+
+    localStorage.setItem('app_radius', scale.toString());
+  }, [borderRadius]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -92,8 +114,7 @@ export default function App() {
             <Route path="/browse/:category" element={<Browse onMovieClick={(m) => setSelectedMovieId(m.id)} />} />
             <Route path="/genre/:id/:name" element={<Browse category="genre" onMovieClick={(m) => setSelectedMovieId(m.id)} />} />
             <Route path="/genres" element={<Genres />} />
-            <Route path="/settings" element={<Settings accentColor={accentColor} setAccentColor={setAccentColor} />} />
-            <Route path="/account/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+            <Route path="/settings" element={<Settings accentColor={accentColor} setAccentColor={setAccentColor} borderRadius={borderRadius} setBorderRadius={setBorderRadius} />} />
             <Route path="/account/edit" element={<ProtectedRoute><EditProfile /></ProtectedRoute>} />
             <Route path="/account/password" element={<ProtectedRoute><ChangePassword /></ProtectedRoute>} />
             <Route path="/account/delete" element={<ProtectedRoute><DeleteAccount /></ProtectedRoute>} />

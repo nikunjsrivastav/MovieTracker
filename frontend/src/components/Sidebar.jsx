@@ -84,8 +84,8 @@ export default function Sidebar({ isCollapsed, onToggleSidebar }) {
         <span className="nav-icon" style={customColor ? { color: customColor } : {}}>
           {icon}
         </span>
-        {!isCollapsed && <span>{label}</span>}
-        {!isCollapsed && badge > 0 && <span className="nav-badge">{badge}</span>}
+        <span>{label}</span>
+        {badge > 0 && <span className="nav-badge">{badge}</span>}
       </NavLink>
     );
   };
@@ -96,7 +96,7 @@ export default function Sidebar({ isCollapsed, onToggleSidebar }) {
         <div className="sidebar-logo-icon">
           {ICONS.logo}
         </div>
-        {!isCollapsed && <h1>MovieTracker</h1>}
+        <h1>MovieTracker</h1>
         <button 
           className="sidebar-toggle-btn" 
           onClick={onToggleSidebar}
@@ -108,7 +108,7 @@ export default function Sidebar({ isCollapsed, onToggleSidebar }) {
       </div>
       <nav className="sidebar-nav" ref={navRef} onScroll={checkScroll}>
         <div className="sidebar-group">
-          {!isCollapsed && <div className="sidebar-section-title">Menu</div>}
+          <div className="sidebar-section-title">Menu</div>
           {MENU_ITEMS.map(item => {
 
             return (
@@ -125,7 +125,7 @@ export default function Sidebar({ isCollapsed, onToggleSidebar }) {
         </div>
 
         <div className="sidebar-group">
-          {!isCollapsed && <div className="sidebar-section-title" style={{ marginTop: 'var(--space-md)' }}>Browse</div>}
+          <div className="sidebar-section-title" style={{ marginTop: 'var(--space-md)' }}>Browse</div>
           {BROWSE_ITEMS.map(item => (
             <NavItem 
               key={item.id} 
@@ -138,7 +138,7 @@ export default function Sidebar({ isCollapsed, onToggleSidebar }) {
         </div>
 
         <div className="sidebar-group">
-          {!isCollapsed && <div className="sidebar-section-title" style={{ marginTop: 'var(--space-md)' }}>Tracking</div>}
+          <div className="sidebar-section-title" style={{ marginTop: 'var(--space-md)' }}>Tracking</div>
           <NavItem to="/mylist/watching" icon={ICONS.watching} label="Watching" badge={stats.watching} customColor="#0A84FF" />
           <NavItem to="/mylist/completed" icon={ICONS.completed} label="Completed" badge={stats.completed} customColor="#30D158" />
           <NavItem to="/mylist/plan_to_watch" icon={ICONS.plan_to_watch} label="Plan to Watch" badge={stats.plan_to_watch} customColor="#FF9F0A" />

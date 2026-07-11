@@ -92,20 +92,7 @@ export default function Sidebar({ isCollapsed, onToggleSidebar }) {
 
   return (
     <aside className={`app-sidebar ${isCollapsed ? 'collapsed' : ''}`} id="sidebar">
-      <div className={`sidebar-logo ${isCollapsed ? 'collapsed' : ''} ${isScrolled ? 'scrolled' : ''}`}>
-        <div className="sidebar-logo-icon">
-          {ICONS.logo}
-        </div>
-        <h1>MovieTracker</h1>
-        <button 
-          className="sidebar-toggle-btn" 
-          onClick={onToggleSidebar}
-          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          title={isCollapsed ? "Expand" : "Collapse"}
-        >
-          {isCollapsed ? ICONS.expand : ICONS.collapse}
-        </button>
-      </div>
+
       <nav className="sidebar-nav" ref={navRef} onScroll={checkScroll}>
         <div className="sidebar-group">
           <div className="sidebar-section-title">Menu</div>

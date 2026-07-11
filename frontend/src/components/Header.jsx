@@ -5,7 +5,8 @@ import { IMG_SIZES, searchMovies } from '../api/tmdb.js';
 import { useAuth } from '../store/auth.jsx';
 
 const SEARCH_ICON = <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z" fill="currentColor"></path></svg>;
-const HAMBURGER_ICON = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="20" height="20"><path d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z" fill="currentColor"></path></svg>;
+const HAMBURGER_ICON = <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>;
+const LOGO_ICON = <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/><line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/><line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="7" x2="22" y2="7"/><line x1="17" y1="17" x2="22" y2="17"/></svg>;
 
 const PROFILE_ACTIONS = [
   { label: 'Edit profile', to: '/account/edit' },
@@ -99,14 +100,29 @@ export default function Header({ onMovieClick, onToggleSidebar }) {
 
   return (
     <header className="app-header">
-      <button
-        className="hamburger-btn btn btn-ghost"
-        style={{ padding: '0.4rem', borderRadius: 'var(--radius-md)' }}
-        onClick={toggleMobileMenu}
-        aria-label="Toggle menu"
-      >
-        {HAMBURGER_ICON}
-      </button>
+      <div className="header-left-section" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}>
+        <button
+          className="hamburger-btn"
+          onClick={toggleMobileMenu}
+          aria-label="Toggle menu"
+        >
+          {HAMBURGER_ICON}
+        </button>
+        <div className="header-logo" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
+          <div className="header-logo-icon" style={{
+            width: '32px', height: '32px', background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.5))',
+            borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 10px rgba(255, 255, 255, 0.1)', color: '#111'
+          }}>
+            {LOGO_ICON}
+          </div>
+          <h1 style={{ 
+            margin: 0, fontSize: 'var(--font-lg)', fontWeight: 700, letterSpacing: '-0.02em', 
+            fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Rounded", "Helvetica Neue", sans-serif' 
+          }}>
+            MovieTracker
+          </h1>
+        </div>
+      </div>
 
       <div
         className="search-container"

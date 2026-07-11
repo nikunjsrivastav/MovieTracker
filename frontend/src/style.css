@@ -212,6 +212,14 @@ img {
   background-clip: text;
 }
 
+.page-title {
+  font-size: var(--font-xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-top: 0;
+  margin-bottom: var(--space-lg);
+}
+
 /* ----- App Layout ----- */
 #app {
   display: flex;
@@ -275,7 +283,8 @@ img {
   background: rgba(15, 15, 18, 0.65);
   backdrop-filter: var(--glass-blur-heavy);
   -webkit-backdrop-filter: var(--glass-blur-heavy);
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), inset 0 -1px 0 rgba(255, 255, 255, 0.03);
   z-index: 100;
   display: flex;
   align-items: center;
@@ -1789,15 +1798,6 @@ img {
 }
 
 /* ----- My List Page ----- */
-.page-header {
-  margin-bottom: var(--space-xl);
-}
-
-.page-title {
-  font-size: var(--font-3xl);
-  font-weight: 800;
-  letter-spacing: -0.03em;
-}
 
 .stats-row {
   display: flex;

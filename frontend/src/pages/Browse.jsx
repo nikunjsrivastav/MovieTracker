@@ -129,7 +129,7 @@ export default function Browse({ onMovieClick, category: propCategory }) {
 
   return (
     <div className="fade-in">
-      <h1 className="page-title" style={{ marginBottom: 'var(--space-xl)' }}>{title}</h1>
+      <h1 className="page-title">{title}</h1>
       
       {loading ? (
         <SkeletonCards count={18} />

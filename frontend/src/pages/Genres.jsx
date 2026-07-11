@@ -131,7 +131,7 @@ export default function Genres() {
   if (loading) {
     return (
       <div className="fade-in">
-        <h1 className="page-title" style={{ marginBottom: 'var(--space-xl)' }}>All Genres</h1>
+        <h1 className="page-title">All Genres</h1>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 'var(--space-lg)' }}>
           {Array(19).fill(0).map((_, i) => (
             <div key={i} className="skeleton" style={{ height: '160px', borderRadius: 'var(--radius-xl)' }}></div>
@@ -144,7 +144,7 @@ export default function Genres() {
 
   return (
     <div className="fade-in">
-      <h1 className="page-title" style={{ marginBottom: 'var(--space-xl)' }}>All Genres</h1>
+      <h1 className="page-title">All Genres</h1>
       
       <div 
         style={{ 

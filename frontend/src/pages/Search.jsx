@@ -72,7 +72,7 @@ export default function Search({ query, onMovieClick }) {
   if (!query) {
     return (
       <div className="fade-in">
-        <h1 className="page-title" style={{ marginBottom: 'var(--space-xl)' }}>Search</h1>
+        <h1 className="page-title">Search</h1>
         <div className="empty-state">
           <div className="empty-icon">{SEARCH_GHOST}</div>
           <h3>Search for movies</h3>
@@ -94,7 +94,7 @@ export default function Search({ query, onMovieClick }) {
 
   return (
     <div className="fade-in">
-      <h1 className="page-title" style={{ marginBottom: 'var(--space-xl)' }}>Results for "{query}"</h1>
+      <h1 className="page-title">Results for "{query}"</h1>
       
       {loading ? (
         <SkeletonCards count={12} />

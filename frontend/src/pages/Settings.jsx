@@ -96,7 +96,7 @@ export default function Settings({ accentColor, setAccentColor, borderRadius, se
 
   return (
     <div className="settings-section fade-in">
-      <h1 className="page-title" style={{ marginBottom: 'var(--space-xl)' }}>Settings</h1>
+      <h1 className="page-title">Settings</h1>
 
       {isAuthenticated && (
         <div className="settings-group" style={{ padding: 0, overflow: 'hidden' }}>

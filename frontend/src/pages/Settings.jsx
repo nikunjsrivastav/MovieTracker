@@ -15,20 +15,20 @@ const ACCENT_COLORS = [
   { name: 'Red', hex: '#FF453A' },
   { name: 'Pink', hex: '#FF375F' },
   { name: 'Purple', hex: '#BF5AF2' },
-  { name: 'Teal', hex: '#64D2FF' },
+  { name: 'Teal', hex: '#0D9488' },
   { name: 'Indigo', hex: '#5E5CE6' },
   { name: 'Lime', hex: '#A3E635' },
   { name: 'Gold', hex: '#FFD60A' },
   { name: 'Coral', hex: '#FF7A59' },
   { name: 'Mint', hex: '#2DD4BF' },
-  { name: 'Slate', hex: '#64748B' },
-  { name: 'Sky', hex: '#7DD3FC' },
+  { name: 'Sky', hex: '#38BDF8' },
   { name: 'Peach', hex: '#FDBA74' },
   { name: 'Sand', hex: '#D4A373' },
   { name: 'Lavender', hex: '#C4B5FD' },
   { name: 'Rose', hex: '#FDA4AF' },
   { name: 'Butter', hex: '#FDE68A' },
   { name: 'Silver', hex: '#CBD5E1' },
+  { name: 'YInMn Blue', hex: '#2E5090' },
 ];
 
 export default function Settings({ accentColor, setAccentColor, shuffleBackground, borderRadius, setBorderRadius }) {

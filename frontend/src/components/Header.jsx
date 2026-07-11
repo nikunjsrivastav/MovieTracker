@@ -110,7 +110,7 @@ export default function Header({ onMovieClick, onToggleSidebar }) {
         </button>
         <div className="header-logo" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
           <div className="header-logo-icon" style={{
-            width: '32px', height: '32px', background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.5))',
+            width: '32px', height: '32px', background: 'var(--bg-logo)',
             borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 10px rgba(255, 255, 255, 0.1)', color: '#111'
           }}>
             {LOGO_ICON}

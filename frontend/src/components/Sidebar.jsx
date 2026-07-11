@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useWatchlist } from '../store/watchlist.jsx';
-import { useAuth } from '../store/auth.jsx';
 
 const ICONS = {
   home: <svg className="ico" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
@@ -39,33 +38,63 @@ const BROWSE_ITEMS = [
   { id: 'now_playing', icon: ICONS.now_playing, label: 'Now Playing' },
 ];
 
-const ACCOUNT_ITEMS = [
-  { id: 'profile', label: 'View Profile', to: '/account/profile' },
-  { id: 'edit', label: 'Edit Profile', to: '/account/edit' },
-  { id: 'password', label: 'Change Password', to: '/account/password' },
-  { id: 'delete', label: 'Delete Account', to: '/account/delete' },
-];
-
-export default function Sidebar({ isCollapsed, onToggleSidebar }) {
+export default function Sidebar({ isCollapsed }) {
   const { getStats } = useWatchlist();
   const stats = getStats();
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isAtBottom, setIsAtBottom] = useState(true);
+  const [showScrollbar, setShowScrollbar] = useState(false);
   const navRef = useRef(null);
+  const scrollHideTimerRef = useRef(null);
 
   const checkScroll = () => {
     if (navRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = navRef.current;
-      setIsScrolled(scrollTop > 0);
-      setIsAtBottom(scrollTop + clientHeight >= scrollHeight - 10);
+      if (navRef.current.scrollHeight <= navRef.current.clientHeight) {
+        setShowScrollbar(false);
+        return;
+      }
+
+      setShowScrollbar(true);
+      window.clearTimeout(scrollHideTimerRef.current);
+      scrollHideTimerRef.current = window.setTimeout(() => {
+        setShowScrollbar(false);
+      }, 700);
     }
   };
 
   useEffect(() => {
-    checkScroll();
-    window.addEventListener('resize', checkScroll);
-    return () => window.removeEventListener('resize', checkScroll);
+    const navElement = navRef.current;
+    if (!navElement) {
+      return undefined;
+    }
+
+    const syncScrollableState = () => {
+      if (navElement.scrollHeight <= navElement.clientHeight) {
+        setShowScrollbar(false);
+      }
+    };
+
+    syncScrollableState();
+    window.addEventListener('resize', syncScrollableState);
+
+    return () => {
+      window.removeEventListener('resize', syncScrollableState);
+      window.clearTimeout(scrollHideTimerRef.current);
+    };
   }, []);
+
+  useEffect(() => {
+    const navElement = navRef.current;
+    if (!navElement) {
+      return undefined;
+    }
+
+    const frameId = window.requestAnimationFrame(() => {
+      if (navElement.scrollHeight <= navElement.clientHeight) {
+        setShowScrollbar(false);
+      }
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [isCollapsed, stats.total]);
 
   const handleNavClick = () => {
     document.getElementById('sidebar')?.classList.remove('open');
@@ -93,7 +122,11 @@ export default function Sidebar({ isCollapsed, onToggleSidebar }) {
   return (
     <aside className={`app-sidebar ${isCollapsed ? 'collapsed' : ''}`} id="sidebar">
 
-      <nav className="sidebar-nav" ref={navRef} onScroll={checkScroll}>
+      <nav
+        className={`sidebar-nav ${showScrollbar && !isCollapsed ? 'show-scrollbar' : ''}`}
+        ref={navRef}
+        onScroll={checkScroll}
+      >
         <div className="sidebar-group">
           {MENU_ITEMS.map(item => {
 

@@ -17,10 +17,21 @@ const ACCENT_COLORS = [
   { name: 'Purple', hex: '#BF5AF2' },
   { name: 'Teal', hex: '#64D2FF' },
   { name: 'Indigo', hex: '#5E5CE6' },
-  { name: 'White', hex: '#FFFFFF' },
+  { name: 'Lime', hex: '#A3E635' },
+  { name: 'Gold', hex: '#FFD60A' },
+  { name: 'Coral', hex: '#FF7A59' },
+  { name: 'Mint', hex: '#2DD4BF' },
+  { name: 'Slate', hex: '#64748B' },
+  { name: 'Sky', hex: '#7DD3FC' },
+  { name: 'Peach', hex: '#FDBA74' },
+  { name: 'Sand', hex: '#D4A373' },
+  { name: 'Lavender', hex: '#C4B5FD' },
+  { name: 'Rose', hex: '#FDA4AF' },
+  { name: 'Butter', hex: '#FDE68A' },
+  { name: 'Silver', hex: '#CBD5E1' },
 ];
 
-export default function Settings({ accentColor, setAccentColor, borderRadius, setBorderRadius }) {
+export default function Settings({ accentColor, setAccentColor, shuffleBackground, borderRadius, setBorderRadius }) {
   const [apiKey, setApiKey] = useState(() => localStorage.getItem('tmdb_api_key') || '');
   const {
     exportData,
@@ -261,15 +272,22 @@ export default function Settings({ accentColor, setAccentColor, borderRadius, se
 
       <div className="settings-group">
         <label>Accent Color</label>
-        <p>Choose a highlight color for buttons, links, and interactive elements.</p>
+        <p>Choose a highlight color for interactive elements and let the ambient gradient wallpaper remix around it.</p>
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginTop: 'var(--space-sm)' }}>
           {ACCENT_COLORS.map((color) => {
-            const isLight = color.hex === '#FFFFFF' || color.hex === '#64D2FF';
+            const normalizedHex = color.hex.replace('#', '');
+            const red = parseInt(normalizedHex.slice(0, 2), 16);
+            const green = parseInt(normalizedHex.slice(2, 4), 16);
+            const blue = parseInt(normalizedHex.slice(4, 6), 16);
+            const isLight = ((0.299 * red) + (0.587 * green) + (0.114 * blue)) / 255 > 0.62;
             const isDark = color.hex === '#1C1C1E';
             return (
               <div
                 key={color.hex}
-                onClick={() => setAccentColor(color.hex)}
+                onClick={() => {
+                  setAccentColor(color.hex);
+                  shuffleBackground();
+                }}
                 title={color.name}
                 style={{
                   width: '36px',
@@ -297,6 +315,9 @@ export default function Settings({ accentColor, setAccentColor, borderRadius, se
               </div>
             );
           })}
+        </div>
+        <div style={{ marginTop: 'var(--space-md)' }}>
+          <button className="btn btn-ghost" style={{ padding: '0.8rem 1.35rem' }} onClick={shuffleBackground}>Shuffle Ambient Wallpaper</button>
         </div>
       </div>
 
